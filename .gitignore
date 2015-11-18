@@ -1,0 +1,9 @@
+*.cbp
+*.depend
+*.layout
+*.ncb
+*.sln
+*.suo
+ATM/
+bin/
+obj/

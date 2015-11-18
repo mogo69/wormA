@@ -8,26 +8,35 @@ class ATM
 {
 public:
     class InnerCash;
-
     bool isBlocked();
-    bool logIn(size_t cardN, size_t PIN);
-    bool hasAdd();
-    string getAdd();
-    int getBalance();
-    bool takeMoney(bool useCreditMoney);
-    bool getDataAbout(size_t cardN);
-    bool sendMoneyTo(size_t cardN);
-    bool changePIN();
+    bool logIn(const string cardN, const size_t PIN);
+    bool logOut();
+    bool hasAdvert();
+    string getAdvert();
+    double getBalance();
+    bool takeMoney(const double amount, bool useCreditMoney = false);
+    bool getDataAbout(const string cardN);
+    bool sendMoneyTo(const string cardN);
+    bool changePIN(const size_t PIN);
     static ATM& getInstance()
     {
         static ATM instance;
         return instance;
     }
 private:
+    string _cardN;
+    InnerCash * _innerCash;
+
     ATM(){};
-    ATM(const ATM& copy);
+    ATM(const ATM&);
     ATM& operator=(const ATM&);
 
+};
+
+class ATM::InnerCash
+{
+    InnerCash(){};
+    ~InnerCash(){};
 };
 
 #include "InnerCash.h"
