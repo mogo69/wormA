@@ -19,19 +19,19 @@ class Bank
 {
 private:
 
-    static const string SQL_GET_ALL_THE_FUCKING_ACCOUNTS;
+    static const string SQL_GET_ALL_ACCOUNTS;
 
-    string _db_host;
-    string _db_name;
-    string _db_user;
-    string _db_pass;
+    string _dbHost;
+    string _dbName;
+    string _dbUser;
+    string _dbPass;
     string _host;
     size_t _port;
 
-    Bank(const string& dbHost,
-        const string& dbName,
-        const string& dbUser,
-        const string& dbPass,
+    Bank(const string& dbHost = "localhost",
+        const string& dbName = "cpp",
+        const string& dbUser = "cpp_user",
+        const string& dbPass = "cppqwerty123",
         const string& host = "localhost",
         size_t port = 8080);
 
@@ -50,7 +50,7 @@ private:
 
 public:
     ~Bank();
-    Bank& getInstance();
+    static Bank& getInstance();
     string process(const Transaction&);
 };
 

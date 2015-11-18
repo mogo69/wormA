@@ -1,13 +1,14 @@
 #include <iostream>
-
 using namespace std;
 
 #include "ATM.h"
+
 int main()
 {
-    cout << "Hello world!" << endl;
     ATM& atm = ATM::getInstance();
-    cout << "Address of my ATM:" << & atm << endl;
-    cout << "Address of my ATM:" << & ATM::getInstance() << endl;
+    if(atm.logIn("12341234123", 1234))
+    {
+        cout<<"Logged in successfull"<<endl;
+    }
     return 0;
 }

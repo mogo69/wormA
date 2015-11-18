@@ -1,10 +1,10 @@
 #include <iostream>
-
 using namespace std;
 
 #include "Bank.h"
+
 int main()
 {
-    cout << "Hello world!" << endl;
+    Bank& bank = Bank::getInstance();
     return 0;
 }

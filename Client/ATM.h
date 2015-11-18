@@ -9,6 +9,9 @@
 #include <string>
 using namespace std;
 
+#include "TCPConnector.h";
+#include "TCPStream.h"
+
 class ATM
 {
 public:
@@ -27,6 +30,8 @@ public:
 
     static ATM& getInstance();
 private:
+    TCPConnector* _connector;
+    TCPStream* _stream;
     string _sesionKey;
     InnerCash * _innerCash;
 
