@@ -39,6 +39,6 @@ class ATM::InnerCash
     ~InnerCash(){};
 };
 
-//#include "InnerCash.h"
+#include "InnerCash.h"
 
 #endif // ATM_H_
