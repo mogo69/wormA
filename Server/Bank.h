@@ -11,16 +11,9 @@
 #include <string>
 using namespace std;
 
-// Dummy forwarded declatation,
-// will be removed later;
-class Transaction;
-
 class Bank
 {
 private:
-
-    static const string SQL_GET_ALL_ACCOUNTS;
-
     string _dbHost;
     string _dbName;
     string _dbUser;
@@ -51,7 +44,6 @@ private:
 public:
     ~Bank();
     static Bank& getInstance();
-    string process(const Transaction&);
 };
 
 #endif // _BANK_H_

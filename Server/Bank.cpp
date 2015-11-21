@@ -5,8 +5,6 @@
 #include <iostream>
 using namespace std;
 
-const string Bank::SQL_GET_ALL_ACCOUNTS= "SELECT * FROM account";
-
 Bank::Bank(const string& dbHost,
         const string& dbName,
         const string& dbUser,
@@ -25,14 +23,18 @@ Bank::Bank(const string& dbHost,
 #endif
     TCPStream* stream(0);
     TCPAcceptor* acceptor = new TCPAcceptor(port, host.c_str());
-    if (acceptor->start() == 0) {
+    if (acceptor->start() == 0)
+    {
         cout<<"TCP Server successfuly started at host "<<host<<" on port "<<port<<endl;
-        while (1) {
+        while (1)
+        {
             stream = acceptor->accept();
-            if (stream != NULL) {
+            if (stream != 0)
+            {
                 size_t len;
                 char line[256];
-                while ((len = stream->receive(line, sizeof(line))) > 0) {
+                while ((len = stream->receive(line, sizeof(line))) > 0)
+                {
                     line[len] = 0;
                     cout<<"Received: "<<line<<endl;
                     stream->send("random text", sizeof("random text"));
