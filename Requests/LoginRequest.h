@@ -1,11 +1,10 @@
 #ifndef _LOGINREQUEST_H_
 #define _LOGINREQUEST_H_
 
-#include "Request.h"
+#include <string>
+using namespace std;
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-using namespace boost::archive;
+#include "Request.h"
 
 class LoginRequest: public Request
 {
@@ -19,13 +18,14 @@ private:
 
     virtual Response* doProcess(MYSQL*) const;
 
+    virtual void doGetFrom(text_iarchive&);
+    virtual void doPutInto(text_oarchive&) const;
+
     LoginRequest(const Request&);
     LoginRequest& operator=(const Request&);
 public:
     LoginRequest(const string& cardNumber ="", const string& PIN ="");
-    ~LoginRequest();
-    virtual void getFrom(text_iarchive&);
-    virtual void putInto(text_oarchive&) const;
+    virtual ~LoginRequest();
 };
 
 template <typename Archive>

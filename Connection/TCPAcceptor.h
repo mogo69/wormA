@@ -1,8 +1,7 @@
-#ifndef __TCPACCEPTOR_H__
-#define __TCPACCEPTOR_H__
+#ifndef _TCPACCEPTOR_H__
+#define _TCPACCEPTOR_H__
 
 #include <string>
-#include <netinet/in.h>
 #include "TCPStream.h"
 
 using namespace std;
@@ -15,10 +14,10 @@ class TCPAcceptor
     bool   m_listening;
 
   public:
-    TCPAcceptor(size_t port, const char* address="");
+    TCPAcceptor(size_t port, const char* address="localhost");
     ~TCPAcceptor();
 
-    int        start();
+    int start();
     TCPStream* accept();
 
   private:

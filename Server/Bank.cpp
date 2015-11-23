@@ -1,9 +1,28 @@
+#define NDEBUG
+
 #include "Bank.h"
-#include "TCPStream.h"
-#include "TCPAcceptor.h"
 
 #include <iostream>
 using namespace std;
+
+#include <sstream>
+std::stringstream ss;
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+using namespace boost::archive;
+
+#include "../Connection/TCPStream.h"
+#include "../Connection/TCPAcceptor.h"
+
+#include "../Requests/Request.h"
+#include "../Requests/LoginRequest.h"
+
+void load(Request& req)
+{
+    text_iarchive ia(ss);
+    req.getFrom(ia);
+}
 
 Bank::Bank(const string& dbHost,
         const string& dbName,
@@ -21,6 +40,21 @@ Bank::Bank(const string& dbHost,
 #ifndef NDEBUG
     cout<<"Bank was successfully created"<<endl;
 #endif
+    MYSQL* connect;
+    connect = mysql_init(NULL);
+    if (!connect)
+    {
+        cout<<"MySQL Initialization failed";
+    }
+    connect=mysql_real_connect(connect, _dbHost.c_str(), _dbUser.c_str(), _dbPass.c_str(), _dbName.c_str(), 0, NULL, 0);
+    if (connect)
+    {
+        cout<<"Database connection succeeded"<<endl;
+    }
+    else
+    {
+        cout<<"Database connection failed"<<endl;
+    }
     TCPStream* stream(0);
     TCPAcceptor* acceptor = new TCPAcceptor(port, host.c_str());
     if (acceptor->start() == 0)
@@ -37,12 +71,20 @@ Bank::Bank(const string& dbHost,
                 {
                     line[len] = 0;
                     cout<<"Received: "<<line<<endl;
+                    ss<<line;
+
+                    LoginRequest req;
+                    load(req);
+
+                    req.process(connect);
+
                     stream->send("random text", sizeof("random text"));
                 }
                 delete stream;
             }
         }
     }
+    mysql_close(connect);
 }
 
 Bank::~Bank()

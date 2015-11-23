@@ -3,14 +3,15 @@
  * Author: Vitalii Moholivskyi
  *
  */
+
 #ifndef _ATM_H_
 #define _ATM_H_
 
 #include <string>
 using namespace std;
 
-#include "TCPConnector.h";
-#include "TCPStream.h"
+#include "../Connection/TCPStream.h"
+#include "../Connection/TCPConnector.h"
 
 class ATM
 {
@@ -56,7 +57,5 @@ struct ATM::InnerCash::Pocket
     size_t _quantity;
     size_t _value;
 };
-
-//#include "InnerCash.h"
 
 #endif // ATM_H_

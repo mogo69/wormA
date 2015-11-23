@@ -1,18 +1,45 @@
-#include <iostream>
-using namespace std;
-#include <sstream>
+#define NDEBUG
 
 #include "ATM.h"
 
-#include "TCPConnector.h"
-#include "TCPStream.h"
+#include <iostream>
+using namespace std;
 
+#include <sstream>
+std::stringstream ss;
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+using namespace boost::archive;
+
+#include "../Requests/Request.h"
+#include "../Requests/LoginRequest.h"
+
+string toString(int x)
+{
+    ss.str("");
+    ss<<x;
+    string res = ss.str();
+    ss.str("");
+    return res;
+}
+
+//This will be removed after moving to boost sockets
+string getSerializedString(const Request& req)
+{
+    ss.str("");
+    text_oarchive oa(ss);
+    req.putInto(oa);
+    string res = ss.str();
+    ss.str("");
+    return res;
+}
 
 ATM::ATM():
     _sesionKey(""),
     _innerCash(new InnerCash()),
     _connector(new TCPConnector()),
-    _stream(_connector->connect("localhost", 8080))
+    _stream(_connector->connect("localhost", 9999))
 {
 #ifndef NDEBUG
     cout << "ATM created." << endl;
@@ -50,16 +77,10 @@ ATM::InnerCash::~InnerCash()
 
 bool ATM::logIn(const string cardN, const size_t PIN)
 {
-    string message ("login ");
-    message += cardN;
-    message += " ";
-    ostringstream ss;
-    ss<<PIN;
-    message += ss.str();
-    _stream->send(message.c_str(), message.size());
-    size_t len(0);
-    char answer[256];
-    len = _stream->receive(answer, sizeof(answer));
-    answer[len] = '\0';
+    LoginRequest req(cardN, toString(PIN));
+    _stream -> send(getSerializedString(req).c_str(), getSerializedString(req).size());
+    char answer[255];
+    size_t len = _stream->receive(answer, sizeof(answer));
+//  If something was received
     return len > 1;
 }

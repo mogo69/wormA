@@ -1,9 +1,6 @@
 #ifndef _REQUEST_H_
 #define _REQUEST_H_
 
-using namespace std;
-#include <string>
-
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 using namespace boost::archive;
@@ -21,16 +18,19 @@ private:
 
     virtual Response* doProcess(MYSQL *) const = 0;
 
+    virtual void doGetFrom(text_iarchive&) = 0;
+    virtual void doPutInto(text_oarchive&) const = 0;
+
     Request(const Request&);
     Request& operator=(const Request&);
 public:
     Request();
-    ~Request();
-
-    virtual void getFrom(text_iarchive&) = 0;
-    virtual void putInto(text_oarchive&) const = 0;
+    virtual ~Request();
 
     Response* process(MYSQL *) const;
+
+    void getFrom(text_iarchive&);
+    void putInto(text_oarchive&) const;
 };
 
 template <typename Archive>

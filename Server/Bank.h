@@ -4,12 +4,13 @@
  *
  */
 
-
 #ifndef _BANK_H_
 #define _BANK_H_
 
 #include <string>
 using namespace std;
+
+#include <mysql/mysql.h>
 
 class Bank
 {
@@ -21,12 +22,12 @@ private:
     string _host;
     size_t _port;
 
-    Bank(const string& dbHost = "localhost",
-        const string& dbName = "cpp",
-        const string& dbUser = "cpp_user",
-        const string& dbPass = "cppqwerty123",
+    Bank(const string& dbHost = "sql4.freesqldatabase.com",
+        const string& dbName = "sql497472",
+        const string& dbUser = "sql497472",
+        const string& dbPass = "dmLXwQJbZz",
         const string& host = "localhost",
-        size_t port = 8080);
+        size_t port = 9999);
 
     bool takeMoney(size_t cardNumber, size_t amount, bool useCreditMoney = false);
     string getData(size_t cardNumber);
