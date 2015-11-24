@@ -18,10 +18,24 @@ using namespace boost::archive;
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
 
+#include "../Responses/Response.h"
+#include "../Responses/LoginResponse.h"
+
 void load(Request& req)
 {
     text_iarchive ia(ss);
     req.getFrom(ia);
+}
+
+string getSerializedString(const Response& response)
+{
+    ss.str("");
+
+    text_oarchive oa(ss);
+    response.putInto(oa);
+    string res = ss.str();
+    ss.str("");
+    return res;
 }
 
 Bank::Bank(const string& dbHost,
@@ -70,15 +84,17 @@ Bank::Bank(const string& dbHost,
                 while ((len = stream->receive(line, sizeof(line))) > 0)
                 {
                     line[len] = 0;
-                    cout<<"Received: "<<line<<endl;
+ //                   cout<<"Received: "<<line<<endl;
                     ss<<line;
 
                     LoginRequest req;
                     load(req);
 
-                    req.process(connect);
 
-                    stream->send("random text", sizeof("random text"));
+                   const LoginResponse& res=  static_cast<const LoginResponse&>(req.process(connect));
+                   stream -> send(getSerializedString(res).c_str(), getSerializedString(res).size());
+//                  Not the best solution
+                   delete &res;
                 }
                 delete stream;
             }

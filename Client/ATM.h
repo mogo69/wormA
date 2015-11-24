@@ -12,7 +12,6 @@ using namespace std;
 
 #include "../Connection/TCPStream.h"
 #include "../Connection/TCPConnector.h"
-
 class ATM
 {
 public:
@@ -48,6 +47,8 @@ public:
     struct Pocket;
     InnerCash();
     ~InnerCash();
+    bool canWithdraw(const double);
+    void withdraw(const double);
 private:
     Pocket* _pockets;
 };

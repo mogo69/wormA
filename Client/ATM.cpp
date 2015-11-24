@@ -15,6 +15,12 @@ using namespace boost::archive;
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
 
+void load(Response& res)
+{
+    text_iarchive ia(ss);
+    res.getFrom(ia);
+}
+
 string toString(int x)
 {
     ss.str("");
@@ -27,6 +33,7 @@ string toString(int x)
 //This will be removed after moving to boost sockets
 string getSerializedString(const Request& req)
 {
+
     ss.str("");
     text_oarchive oa(ss);
     req.putInto(oa);
@@ -45,7 +52,6 @@ ATM::ATM():
     cout << "ATM created." << endl;
     if (_stream) cout<<"Connection to server established"<<endl;
 #endif
-
 }
 
 ATM::~ATM()
@@ -81,6 +87,17 @@ bool ATM::logIn(const string cardN, const size_t PIN)
     _stream -> send(getSerializedString(req).c_str(), getSerializedString(req).size());
     char answer[255];
     size_t len = _stream->receive(answer, sizeof(answer));
+    answer[len] = '\0';
+
+    ss<<answer;
+
+    LoginResponse res;
+    load(res);
+
+    cout<<boolalpha;
+    cout<<"Successful: "<<res.isSuccessful()<<endl;
+    cout<<"Message: "<<res.getMessage()<<endl;
+
 //  If something was received
     return len > 1;
 }

@@ -5,6 +5,8 @@
 using namespace std;
 
 #include "Request.h"
+#include "../Responses/LoginResponse.h"
+
 
 class LoginRequest: public Request
 {
@@ -16,7 +18,7 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned int version);
 
-    virtual Response* doProcess(MYSQL*) const;
+    virtual const LoginResponse& doProcess(MYSQL*) const;
 
     virtual void doGetFrom(text_iarchive&);
     virtual void doPutInto(text_oarchive&) const;

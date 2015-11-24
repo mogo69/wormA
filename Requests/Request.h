@@ -7,7 +7,7 @@ using namespace boost::archive;
 
 #include <mysql/mysql.h>
 
-class Response;
+#include "../Responses/Response.h"
 
 class Request
 {
@@ -16,7 +16,7 @@ private:
     template <typename Archive>
     void serialize(Archive &, const unsigned);
 
-    virtual Response* doProcess(MYSQL *) const = 0;
+    virtual const Response& doProcess(MYSQL *) const = 0;
 
     virtual void doGetFrom(text_iarchive&) = 0;
     virtual void doPutInto(text_oarchive&) const = 0;
@@ -27,7 +27,7 @@ public:
     Request();
     virtual ~Request();
 
-    Response* process(MYSQL *) const;
+    const Response& process(MYSQL *) const;
 
     void getFrom(text_iarchive&);
     void putInto(text_oarchive&) const;
