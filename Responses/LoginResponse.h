@@ -1,4 +1,4 @@
-#ifndef _LOGINRESPONSE_H_
+/*#ifndef _LOGINRESPONSE_H_
 #define _LOGINRESPONSE_H_
 
 #include <string>
@@ -38,4 +38,4 @@ void LoginResponse::serialize(Archive &ar, const unsigned int version)
     //ar & _PIN;
 };
 
-#endif // _LOGINRESPONSE_H_
+#endif // _LOGINRESPONSE_H_*/

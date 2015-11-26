@@ -91,7 +91,7 @@ Bank::Bank(const string& dbHost,
                     load(req);
 
 
-                   const LoginResponse& res=  static_cast<const LoginResponse&>(req.process(connect));
+                   const Response& res=  static_cast<const Response&>(req.process(connect));
                    stream -> send(getSerializedString(res).c_str(), getSerializedString(res).size());
 //                  Not the best solution
                    delete &res;

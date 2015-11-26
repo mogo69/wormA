@@ -5,7 +5,8 @@
 #include <iostream>
 using namespace std;
 
-Response::Response()//:_isSuccessful(isSuccessful)
+Response::Response(const bool wasSuccessful, const string message):
+    _wasSuccessful(wasSuccessful), _message(message)
 {
 #ifndef NDEBUG
     cout<<"Response was created"<<endl;
@@ -19,19 +20,16 @@ Response::~Response()
 #endif
 }
 
-/*bool Response::isSuccessful() const
-{
-    return doIsSuccessful(connect);
-}*/
-
 void Response::getFrom(text_iarchive& ia)
 {
-    doGetFrom(ia);
+    ia.register_type<Response>();
+    ia >> *this;
 }
 
 void Response::putInto(text_oarchive& oa) const
 {
-    doPutInto(oa);
+    oa.register_type<Response>();
+    oa << *this;
 }
 
 

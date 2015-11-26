@@ -3,7 +3,6 @@
  * Author: Vitalii Moholivskyi
  *
  */
-
 #ifndef _ATM_H_
 #define _ATM_H_
 
@@ -45,12 +44,13 @@ class ATM::InnerCash
 {
 public:
     struct Pocket;
-    InnerCash();
+    InnerCash(const double cashAmount);
     ~InnerCash();
     bool canWithdraw(const double);
     void withdraw(const double);
 private:
     Pocket* _pockets;
+    double _cashAmount;//temprorary solution until brilliant algoritm won't be created
 };
 
 struct ATM::InnerCash::Pocket

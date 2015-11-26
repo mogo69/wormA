@@ -1,4 +1,4 @@
-#define NDEBUG
+/*#define NDEBUG
 
 #include "LoginResponse.h"
 
@@ -39,5 +39,4 @@ void LoginResponse::doPutInto(text_oarchive& oa) const
 {
     oa.register_type<LoginResponse>();
     oa << *this;
-}
-
+}*/

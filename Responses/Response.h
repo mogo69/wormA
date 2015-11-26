@@ -11,33 +11,31 @@ using namespace std;
 
 class Response
 {
-private:
-    //bool _isSuccessful;
-    friend class boost::serialization::access;
-    template <typename Archive>
-    void serialize(Archive &, const unsigned);
-
-    //virtual bool doIsSuccessful() const = 0;
-
-    virtual void doGetFrom(text_iarchive&) = 0;
-    virtual void doPutInto(text_oarchive&) const = 0;
-
-    Response(const Response&);
-    Response& operator=(const Response&);
-
 public:
-    Response(/*bool isSuccessful*/);
+    Response(const bool wasSuccessful = false, const string message = "");
     virtual ~Response();
-    //bool isSuccessful() const;
+    inline bool wasSuccessful() const { return _wasSuccessful;}
+    inline string getMessage() const  { return _message;      }
 
     void getFrom(text_iarchive&);
     void putInto(text_oarchive&) const;
+
+private:
+    bool _wasSuccessful;
+    string _message;
+    Response(const Response&);
+    Response& operator=(const Response&);
+
+    friend class boost::serialization::access;
+    template <typename Archive>
+    void serialize(Archive &, const unsigned);
 };
 
 template <typename Archive>
 void Response::serialize(Archive& ar, const unsigned int version)
 {
-    //ar & _isSuccessful;
+     ar & _wasSuccessful;
+     ar & _message;
 }
 
 #endif // _RESPONSE_H_

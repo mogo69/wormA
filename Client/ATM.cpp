@@ -15,6 +15,7 @@ using namespace boost::archive;
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
 
+
 void load(Response& res)
 {
     text_iarchive ia(ss);
@@ -42,9 +43,10 @@ string getSerializedString(const Request& req)
     return res;
 }
 
+
 ATM::ATM():
     _sesionKey(""),
-    _innerCash(new InnerCash()),
+    _innerCash(new InnerCash(50000)),
     _connector(new TCPConnector()),
     _stream(_connector->connect("localhost", 9999))
 {
@@ -60,6 +62,7 @@ ATM::~ATM()
     cout << "ATM deleated." << endl;
 #endif
     delete _innerCash;
+    delete _connector;
 }
 
 ATM& ATM::getInstance()
@@ -68,8 +71,9 @@ ATM& ATM::getInstance()
     return instance;
 }
 
-ATM::InnerCash::InnerCash():
-    _pockets(new Pocket[4])
+//=========================Inner Cash===============================================
+ATM::InnerCash::InnerCash(double cashAmount):
+    _cashAmount(cashAmount), _pockets(new Pocket[4])
 {
 #ifndef NDEBUG
     cout << _pockets->_quantity << endl;
@@ -81,6 +85,17 @@ ATM::InnerCash::~InnerCash()
     delete [] _pockets;
 }
 
+bool ATM::InnerCash::canWithdraw(const double sum)
+{
+    //Temprorary solution
+    return (_cashAmount <= sum);
+}
+void ATM::InnerCash::withdraw(const double sum)
+{
+    //Temprorary solution
+    _cashAmount -= sum;
+}
+//==================================================================================
 bool ATM::logIn(const string cardN, const size_t PIN)
 {
     LoginRequest req(cardN, toString(PIN));
@@ -91,13 +106,14 @@ bool ATM::logIn(const string cardN, const size_t PIN)
 
     ss<<answer;
 
-    LoginResponse res;
+    Response res;
     load(res);
 
     cout<<boolalpha;
-    cout<<"Successful: "<<res.isSuccessful()<<endl;
+    cout<<"Successful: "<<res.wasSuccessful()<<endl;
     cout<<"Message: "<<res.getMessage()<<endl;
 
 //  If something was received
     return len > 1;
 }
+

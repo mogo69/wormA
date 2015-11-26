@@ -32,14 +32,14 @@ LoginRequest::~LoginRequest()
 #endif
 }
 
-const LoginResponse& LoginRequest::doProcess(MYSQL* connect) const
+const Response& LoginRequest::doProcess(MYSQL* connect) const
 {
     mysql_query(connect, ("SELECT session_key FROM account WHERE card_number = " + _cardNumber + " AND pin = " + _PIN).c_str());
     MYSQL_ROW row = mysql_fetch_row(mysql_store_result(connect));
     if(row == 0)
     {
  //       cout<<"Incorrect card number or PIN"<<endl;
-        return *( new LoginResponse(false, "Incorrect card number or PIN"));
+        return *( new Response(false, "Incorrect card number or PIN"));
     }
     else
     {
@@ -49,15 +49,15 @@ const LoginResponse& LoginRequest::doProcess(MYSQL* connect) const
             string sessionKey = generateRandom(32);
  //           cout<<"Session key generated: "<<sessionKey<<endl;
             mysql_query(connect, ("UPDATE account SET session_key = '" + sessionKey + "' WHERE card_number = " + _cardNumber).c_str());
-            return *(new LoginResponse(true, sessionKey));
+            return *(new Response(true, sessionKey));
         }
         else
         {
  //           cout<<"Session key is "<<row[0]<<endl;
-          return *( new LoginResponse(false, "Allready logged in"));
+          return *( new Response(false, "Allready logged in"));
         }
     }
-    return *(new LoginResponse(false, "Something went wrong"));
+    return *(new Response(false, "Something went wrong"));
 }
 
 void LoginRequest::doGetFrom(text_iarchive& ia)
