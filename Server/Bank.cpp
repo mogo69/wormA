@@ -14,9 +14,9 @@ using namespace boost::archive;
 
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
+//#include "../Requests/LogoutRequest.h"
 
 #include "../Responses/Response.h"
-#include "../Responses/LoginResponse.h"
 
 Bank::Bank(const string& dbHost,
         const string& dbName,

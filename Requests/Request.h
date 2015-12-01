@@ -11,6 +11,14 @@ using namespace boost::archive;
 
 class Request
 {
+public:
+    Request();
+    virtual ~Request();
+
+    const Response& process(MYSQL *) const;
+
+    void getFrom(text_iarchive&);
+    void putInto(text_oarchive&) const;
 private:
     friend class boost::serialization::access;
     template <typename Archive>
@@ -23,14 +31,6 @@ private:
 
     Request(const Request&);
     Request& operator=(const Request&);
-public:
-    Request();
-    virtual ~Request();
-
-    const Response& process(MYSQL *) const;
-
-    void getFrom(text_iarchive&);
-    void putInto(text_oarchive&) const;
 };
 
 template <typename Archive>

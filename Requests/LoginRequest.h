@@ -38,5 +38,4 @@ void LoginRequest::serialize(Archive &ar, const unsigned int version)
     ar & _cardNumber;
     ar & _PIN;
 };
-
 #endif // _LOGINREQUEST_H_
