@@ -5,38 +5,18 @@
 #include <iostream>
 using namespace std;
 
-#include <sstream>
-std::stringstream ss;
+#include <boost/asio.hpp>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-using namespace boost::archive;
 
-#include "../Connection/TCPStream.h"
-#include "../Connection/TCPAcceptor.h"
+using namespace boost::archive;
 
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
 
 #include "../Responses/Response.h"
 #include "../Responses/LoginResponse.h"
-
-void load(Request& req)
-{
-    text_iarchive ia(ss);
-    req.getFrom(ia);
-}
-
-string getSerializedString(const Response& response)
-{
-    ss.str("");
-
-    text_oarchive oa(ss);
-    response.putInto(oa);
-    string res = ss.str();
-    ss.str("");
-    return res;
-}
 
 Bank::Bank(const string& dbHost,
         const string& dbName,
@@ -60,7 +40,7 @@ Bank::Bank(const string& dbHost,
     {
         cout<<"MySQL Initialization failed";
     }
-    connect=mysql_real_connect(connect, _dbHost.c_str(), _dbUser.c_str(), _dbPass.c_str(), _dbName.c_str(), 0, NULL, 0);
+    connect=mysql_real_connect(connect, _dbHost.c_str(), _dbUser.c_str(), _dbPass.c_str(), _dbName.c_str(), 0, 0, 0);
     if (connect)
     {
         cout<<"Database connection succeeded"<<endl;
@@ -69,36 +49,30 @@ Bank::Bank(const string& dbHost,
     {
         cout<<"Database connection failed"<<endl;
     }
-    TCPStream* stream(0);
-    TCPAcceptor* acceptor = new TCPAcceptor(port, host.c_str());
-    if (acceptor->start() == 0)
+
+    boost::asio::io_service io_service;
+    boost::asio::ip::tcp::acceptor acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"),_port));
+
+    boost::asio::ip::tcp::socket socket( io_service );
+
+    cout<<"TCP Server successfuly started at host "<<host<<" on port "<<port<<endl;
+
+    while (true)
     {
-        cout<<"TCP Server successfuly started at host "<<host<<" on port "<<port<<endl;
-        while (1)
-        {
-            stream = acceptor->accept();
-            if (stream != 0)
-            {
-                size_t len;
-                char line[256];
-                while ((len = stream->receive(line, sizeof(line))) > 0)
-                {
-                    line[len] = 0;
- //                   cout<<"Received: "<<line<<endl;
-                    ss<<line;
+        acceptor.accept( socket );
+        size_t header;
+        boost::asio::read(socket, boost::asio::buffer(&header, sizeof(header)));
 
-                    LoginRequest req;
-                    load(req);
+        boost::asio::streambuf buf;
+        const size_t rc = boost::asio::read(socket, buf.prepare( header ));
+        buf.commit( header );
 
+        istream is( &buf );
+        boost::archive::text_iarchive ar( is );
 
-                   const Response& res=  static_cast<const Response&>(req.process(connect));
-                   stream -> send(getSerializedString(res).c_str(), getSerializedString(res).size());
-//                  Not the best solution
-                   delete &res;
-                }
-                delete stream;
-            }
-        }
+        LoginRequest req;
+        ar & req;
+        req.show();
     }
     mysql_close(connect);
 }

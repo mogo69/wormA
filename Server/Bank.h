@@ -22,10 +22,10 @@ private:
     string _host;
     size_t _port;
 
-    Bank(const string& dbHost = "sql4.freesqldatabase.com",
-        const string& dbName = "sql497472",
-        const string& dbUser = "sql497472",
-        const string& dbPass = "dmLXwQJbZz",
+    Bank(const string& dbHost = "db4free.net",
+        const string& dbName = "w0rm",
+        const string& dbUser = "w0rmer",
+        const string& dbPass = "qwerty123",
         const string& host = "localhost",
         size_t port = 9999);
 

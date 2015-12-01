@@ -5,6 +5,8 @@
 #include <iostream>
 using namespace std;
 
+#include <boost/asio.hpp>
+
 #include <sstream>
 std::stringstream ss;
 
@@ -46,9 +48,9 @@ string getSerializedString(const Request& req)
 
 ATM::ATM():
     _sesionKey(""),
-    _innerCash(new InnerCash(50000)),
-    _connector(new TCPConnector()),
-    _stream(_connector->connect("localhost", 9999))
+    _innerCash(new InnerCash(50000))
+ //   _connector(new TCPConnector()),
+  //  _stream(_connector->connect("localhost", 9999))
 {
 #ifndef NDEBUG
     cout << "ATM created." << endl;
@@ -98,7 +100,7 @@ void ATM::InnerCash::withdraw(const double sum)
 //==================================================================================
 bool ATM::logIn(const string cardN, const size_t PIN)
 {
-    LoginRequest req(cardN, toString(PIN));
+ /*   LoginRequest req(cardN, toString(PIN));
     _stream -> send(getSerializedString(req).c_str(), getSerializedString(req).size());
     char answer[255];
     size_t len = _stream->receive(answer, sizeof(answer));
@@ -112,8 +114,36 @@ bool ATM::logIn(const string cardN, const size_t PIN)
     cout<<boolalpha;
     cout<<"Successful: "<<res.wasSuccessful()<<endl;
     cout<<"Message: "<<res.getMessage()<<endl;
-
+*/
 //  If something was received
-    return len > 1;
+    LoginRequest req(cardN, toString(PIN));
+    boost::asio::streambuf buf;
+    std::ostream os( &buf );
+    boost::archive::text_oarchive ar( os );
+    ar & req;
+
+    boost::asio::io_service io_service;
+    boost::asio::ip::tcp::socket socket( io_service );
+    const short port = 9999;
+    socket.connect(
+            boost::asio::ip::tcp::endpoint(
+                boost::asio::ip::address::from_string( "127.0.0.1" ),
+                port
+                )
+            );
+
+    const size_t header = buf.size();
+    std::cout << "buffer size " << header << " bytes" << std::endl;
+
+    // send header and buffer using scatter
+    std::vector<boost::asio::const_buffer> buffers;
+    buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
+    buffers.push_back( buf.data() );
+    const size_t rc = boost::asio::write(
+            socket,
+            buffers
+            );
+    std::cout << "wrote " << rc << " bytes" << std::endl;;
+    return rc > 1;
 }
 

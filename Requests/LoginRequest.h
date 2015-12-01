@@ -28,6 +28,7 @@ private:
 public:
     LoginRequest(const string& cardNumber ="", const string& PIN ="");
     virtual ~LoginRequest();
+    void show() const { cout<<"PIN: "<<_PIN<<" card number: "<<_cardNumber<<endl;};
 };
 
 template <typename Archive>
