@@ -1,7 +1,6 @@
 #define NDEBUG
 
 #include "LoginRequest.h"
-#include "../Responses/LoginResponse.h"
 
 string generateRandom(const int len) {
     static const char alphanum[] =

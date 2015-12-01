@@ -10,6 +10,9 @@ using namespace std;
 
 class LoginRequest: public Request
 {
+public:
+    LoginRequest(const string& cardNumber ="", const string& PIN ="");
+    virtual ~LoginRequest();
 private:
     string _cardNumber;
     string _PIN;
@@ -25,9 +28,6 @@ private:
 
     LoginRequest(const Request&);
     LoginRequest& operator=(const Request&);
-public:
-    LoginRequest(const string& cardNumber ="", const string& PIN ="");
-    virtual ~LoginRequest();
 };
 
 template <typename Archive>
@@ -37,5 +37,4 @@ void LoginRequest::serialize(Archive &ar, const unsigned int version)
     ar & _cardNumber;
     ar & _PIN;
 };
-
 #endif // _LOGINREQUEST_H_

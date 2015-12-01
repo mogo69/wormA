@@ -17,9 +17,9 @@ using namespace boost::archive;
 
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
+#include "../Requests/LogoutRequest.h"
 
 #include "../Responses/Response.h"
-#include "../Responses/LoginResponse.h"
 
 void load(Request& req)
 {
@@ -87,14 +87,14 @@ Bank::Bank(const string& dbHost,
  //                   cout<<"Received: "<<line<<endl;
                     ss<<line;
 
-                    LoginRequest req;
-                    load(req);
+                    Request* req = new LoginRequest();
+                    load(*req);
 
 
-                   const Response& res=  static_cast<const Response&>(req.process(connect));
+                   const Response& res=  req->process(connect);
                    stream -> send(getSerializedString(res).c_str(), getSerializedString(res).size());
 //                  Not the best solution
-                   delete &res;
+                    delete &res;
                 }
                 delete stream;
             }
