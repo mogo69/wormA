@@ -1,5 +1,10 @@
 #define NDEBUG
 
+#include <sstream>
+
+#include <string>
+using namespace std;
+
 #include "LoginRequest.h"
 
 string generateRandom(const int len) {
@@ -14,7 +19,15 @@ string generateRandom(const int len) {
     return res;
 }
 
-LoginRequest::LoginRequest(const string& cardNumber, const string& PIN):
+template < typename T >
+string to_string( const T& n )
+{
+    ostringstream stm ;
+    stm << n ;
+    return stm.str() ;
+}
+
+LoginRequest::LoginRequest(const string& cardNumber, unsigned PIN):
     Request(),
     _cardNumber(cardNumber),
     _PIN(PIN)
@@ -33,7 +46,7 @@ LoginRequest::~LoginRequest()
 
 const Response& LoginRequest::doProcess(MYSQL* connect) const
 {
-    mysql_query(connect, ("SELECT session_key FROM account WHERE card_number = " + _cardNumber + " AND pin = " + _PIN).c_str());
+    mysql_query(connect, ("SELECT session_key FROM account WHERE card_number = " + _cardNumber + " AND pin = " + to_string(_PIN)).c_str());
     MYSQL_ROW row = mysql_fetch_row(mysql_store_result(connect));
     if(row == 0)
     {
@@ -58,16 +71,3 @@ const Response& LoginRequest::doProcess(MYSQL* connect) const
     }
     return *(new Response(false, "Something went wrong"));
 }
-
-void LoginRequest::doGetFrom(text_iarchive& ia)
-{
-    ia.register_type<LoginRequest>();
-    ia >> *this;
-}
-
-void LoginRequest::doPutInto(text_oarchive& oa) const
-{
-    oa.register_type<LoginRequest>();
-    oa << *this;
-}
-

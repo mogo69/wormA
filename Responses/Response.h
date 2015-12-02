@@ -12,7 +12,7 @@ using namespace std;
 class Response
 {
 public:
-    Response(const bool wasSuccessful = false, const string message = "");
+    Response(const bool wasSuccessful = false, const string& message = "");
     virtual ~Response();
     inline bool wasSuccessful() const { return _wasSuccessful;}
     inline string getMessage() const  { return _message;      }

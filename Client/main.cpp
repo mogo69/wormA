@@ -14,9 +14,9 @@ int main()
     while(atm.canWithdraw(70))
     {
         atm.withdraw(70);
-    }*/
-    //if(atm.logIn("6767959408184551137", 9253))
-    if(atm.logIn("6767207064848269564", 5406))
+    }
+*/
+    if(atm.logIn("6771685347990238", 1783))
     {
         cout<<"Logged in successfull"<<endl;
     }

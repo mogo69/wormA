@@ -1,18 +1,22 @@
 #ifndef _LOGINREQUEST_H_
 #define _LOGINREQUEST_H_
 
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/shared_ptr.hpp>
+
 #include <string>
 using namespace std;
 
 #include "Request.h"
-#include "../Responses/Response.h"
-
 
 class LoginRequest: public Request
 {
+public:
+    LoginRequest(const string& cardNumber ="",  unsigned PIN = 0);
+    virtual ~LoginRequest();
 private:
     string _cardNumber;
-    string _PIN;
+    unsigned _PIN;
 
     friend class boost::serialization::access;
     template <typename Archive>
@@ -20,22 +24,17 @@ private:
 
     virtual const Response& doProcess(MYSQL*) const;
 
-    virtual void doGetFrom(text_iarchive&);
-    virtual void doPutInto(text_oarchive&) const;
-
     LoginRequest(const Request&);
     LoginRequest& operator=(const Request&);
-public:
-    LoginRequest(const string& cardNumber ="", const string& PIN ="");
-    virtual ~LoginRequest();
-    void show() const { cout<<"PIN: "<<_PIN<<" card number: "<<_cardNumber<<endl;};
 };
+
+BOOST_SERIALIZATION_SHARED_PTR(LoginRequest)
 
 template <typename Archive>
 void LoginRequest::serialize(Archive &ar, const unsigned int version)
 {
-    ar & boost::serialization::base_object<Request>(*this);
-    ar & _cardNumber;
-    ar & _PIN;
+    ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Request);
+    ar & boost::serialization::make_nvp("cardNumber", _cardNumber);
+    ar & boost::serialization::make_nvp("PIN", _PIN);;
 };
 #endif // _LOGINREQUEST_H_

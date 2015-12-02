@@ -10,6 +10,15 @@
 #include <string>
 using namespace std;
 
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/assume_abstract.hpp>
+#include <boost/serialization/shared_ptr.hpp>
+#include <boost/serialization/nvp.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
+#include <boost/serialization/export.hpp>
+
 #include <mysql/mysql.h>
 
 class Bank

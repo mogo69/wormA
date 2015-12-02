@@ -1,9 +1,9 @@
 #ifndef _REQUEST_H_
 #define _REQUEST_H_
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-using namespace boost::archive;
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/assume_abstract.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 
 #include <mysql/mysql.h>
 
@@ -16,9 +16,6 @@ public:
     virtual ~Request();
 
     const Response& process(MYSQL *) const;
-
-    void getFrom(text_iarchive&);
-    void putInto(text_oarchive&) const;
 private:
     friend class boost::serialization::access;
     template <typename Archive>
@@ -26,12 +23,12 @@ private:
 
     virtual const Response& doProcess(MYSQL *) const = 0;
 
-    virtual void doGetFrom(text_iarchive&) = 0;
-    virtual void doPutInto(text_oarchive&) const = 0;
-
     Request(const Request&);
     Request& operator=(const Request&);
 };
+
+BOOST_SERIALIZATION_ASSUME_ABSTRACT(Request)
+BOOST_SERIALIZATION_SHARED_PTR(Request)
 
 template <typename Archive>
 void Request::serialize(Archive& ar, const unsigned int version)

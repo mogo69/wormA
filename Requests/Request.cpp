@@ -24,13 +24,3 @@ const Response& Request::process(MYSQL * connect) const
     return doProcess(connect);
 }
 
-void Request::getFrom(text_iarchive& ia)
-{
-    doGetFrom(ia);
-}
-
-void Request::putInto(text_oarchive& oa) const
-{
-    doPutInto(oa);
-}
-

@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace std;
 
-Response::Response(const bool wasSuccessful, const string message):
+Response::Response(const bool wasSuccessful, const string& message):
     _wasSuccessful(wasSuccessful), _message(message)
 {
 #ifndef NDEBUG
