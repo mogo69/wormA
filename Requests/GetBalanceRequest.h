@@ -1,5 +1,5 @@
-#ifndef _LOGOUTREQUEST_H_
-#define _LOGOUTREQUEST_H_
+#ifndef _GET_BALANCE_REQUEST_H_
+#define _GET_BALANCE_REQUEST_H_
 
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/shared_ptr.hpp>
@@ -9,11 +9,11 @@ using namespace std;
 
 #include "Request.h"
 
-class LogoutRequest: public Request
+class GetBalanceRequest: public Request
 {
 public:
-    LogoutRequest(const string& sessionKey ="");
-    virtual ~LogoutRequest();
+    GetBalanceRequest(const string& sessionKey ="");
+    virtual ~GetBalanceRequest();
 private:
     string _sessionKey;
 
@@ -23,16 +23,17 @@ private:
 
     virtual const Response doProcess(MYSQL*) const;
 
-    LogoutRequest(const Request&);
-    LogoutRequest& operator=(const Request&);
+    GetBalanceRequest(const Request&);
+    GetBalanceRequest& operator=(const Request&);
 };
 
-BOOST_SERIALIZATION_SHARED_PTR(LogoutRequest)
+BOOST_SERIALIZATION_SHARED_PTR(GetBalanceRequest)
 
 template <typename Archive>
-void LogoutRequest::serialize(Archive &ar, const unsigned int version)
+void GetBalanceRequest::serialize(Archive &ar, const unsigned int version)
 {
     ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Request);
     ar & boost::serialization::make_nvp("sessionKey", _sessionKey);
 };
-#endif // _LOGINREQUEST_H_
+
+#endif // _GET_BALANCE_REQUEST_H_

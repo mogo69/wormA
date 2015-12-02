@@ -13,17 +13,13 @@ class Response
 {
 public:
     Response(const bool wasSuccessful = false, const string& message = "");
+    Response(const Response&);
     virtual ~Response();
     inline bool wasSuccessful() const { return _wasSuccessful;}
     inline string getMessage() const  { return _message;      }
-
-    void getFrom(text_iarchive&);
-    void putInto(text_oarchive&) const;
-
 private:
     bool _wasSuccessful;
     string _message;
-    Response(const Response&);
     Response& operator=(const Response&);
 
     friend class boost::serialization::access;

@@ -22,7 +22,7 @@ private:
     template <typename Archive>
     void serialize(Archive &ar, const unsigned int version);
 
-    virtual const Response& doProcess(MYSQL*) const;
+    virtual const Response doProcess(MYSQL*) const;
 
     LoginRequest(const Request&);
     LoginRequest& operator=(const Request&);

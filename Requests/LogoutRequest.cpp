@@ -23,8 +23,8 @@ LogoutRequest::~LogoutRequest()
 #endif
 }
 
-const Response& LogoutRequest::doProcess(MYSQL* connect) const
+const Response LogoutRequest::doProcess(MYSQL* connect) const
 {
     mysql_query(connect, ("UPDATE account SET session_key = NULL WHERE session_key = '" + _sessionKey + "'").c_str());
-    return *( new Response(true, "You have loged out successfuly"));
+    return Response(true, "You have loged out successfuly");
 }

@@ -30,10 +30,12 @@ using namespace boost::archive;
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
 #include "../Requests/LogoutRequest.h"
+#include "../Requests/GetBalanceRequest.h"
 
 BOOST_CLASS_EXPORT_GUID(Request, "request")
 BOOST_CLASS_EXPORT_GUID(LoginRequest, "login_request")
 BOOST_CLASS_EXPORT_GUID(LogoutRequest, "logout_request")
+BOOST_CLASS_EXPORT_GUID(GetBalanceRequest, "get_balance_request")
 
 ATM::ATM():
     _sessionKey(""),
@@ -60,11 +62,12 @@ ATM& ATM::getInstance()
 
 bool ATM::canWithdraw(size_t sum)
 {
-    _innerCash->canWithdraw(sum);
+    return _innerCash->canWithdraw(sum);
 }
+
 bool ATM::withdraw(const size_t sum, const bool useCreditMoney)
 {
-    _innerCash->withdraw(sum);
+    return _innerCash->withdraw(sum);
 }
 
 void ATM::sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tcp::socket& socket)
@@ -80,10 +83,7 @@ void ATM::sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tc
     std::vector<boost::asio::const_buffer> buffers;
     buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
     buffers.push_back( buf.data() );
-    const size_t rc = boost::asio::write(
-            socket,
-            buffers
-            );
+    boost::asio::write(socket, buffers);
 }
 
 void ATM::receiveResponse(Response& resp, boost::asio::ip::tcp::socket& socket)
@@ -92,7 +92,7 @@ void ATM::receiveResponse(Response& resp, boost::asio::ip::tcp::socket& socket)
     boost::asio::read(socket, boost::asio::buffer(&header, sizeof(header)));
 
     boost::asio::streambuf buf;
-    const size_t rc = boost::asio::read(socket, buf.prepare( header ));
+    boost::asio::read(socket, buf.prepare( header ));
     buf.commit( header );
 
     istream is( &buf );
@@ -116,12 +116,28 @@ bool ATM::logIn(const string cardN, const unsigned PIN)
     Response resp;
     receiveResponse(resp, socket);
     socket.close();
-    cout<<resp.getMessage()<<endl;
     if(resp.wasSuccessful())
     {
         _sessionKey = resp.getMessage();
     }
     return resp.wasSuccessful();
+}
+
+double ATM::getBalance()
+{
+    boost::asio::io_service io_service;
+    boost::asio::ip::tcp::socket socket(io_service);
+    socket.connect(
+            boost::asio::ip::tcp::endpoint(
+                boost::asio::ip::address::from_string( "127.0.0.1" ),
+                9999
+                )
+            );
+    sendRequest(boost::make_shared<GetBalanceRequest>(_sessionKey), socket);
+    Response resp;
+    receiveResponse(resp, socket);
+    socket.close();
+    return resp.wasSuccessful() ? atof(resp.getMessage().c_str()) : -1;
 }
 
 bool ATM::logOut()
@@ -143,8 +159,8 @@ bool ATM::logOut()
     if(resp.wasSuccessful())
     {
         _sessionKey = "";
-        return true;
     }
+    return resp.wasSuccessful();
 }
 
 

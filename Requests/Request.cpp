@@ -19,7 +19,7 @@ Request::~Request()
 #endif
 }
 
-const Response& Request::process(MYSQL * connect) const
+const Response Request::process(MYSQL * connect) const
 {
     return doProcess(connect);
 }
