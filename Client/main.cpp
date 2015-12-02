@@ -22,8 +22,8 @@ int main()
     {
         cout<<"Logged in successfull"<<endl;
         cout<<atm.getBalance()<<endl;
-        if(atm.canWithdraw(1000)) atm.withdraw(1000);
-        if(atm.canWithdraw(710)) atm.withdraw(710);
+        atm.withdraw(10);
+
     }
     else
     {

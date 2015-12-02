@@ -69,17 +69,19 @@ bool ATM::canWithdraw(size_t sum)
 {
     return (sum < getBalance() && _innerCash->canWithdraw(sum));
 }
+void connect(boost::asio::ip::tcp::socket& socket)
+{
+    socket.connect(
+            boost::asio::ip::tcp::endpoint(
+                boost::asio::ip::address::from_string( "127.0.0.1" ),
+                9999));
+}
 
 bool ATM::withdraw(const size_t sum, const bool useCreditMoney)
 {
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::socket socket(io_service);
-    socket.connect(
-            boost::asio::ip::tcp::endpoint(
-                boost::asio::ip::address::from_string( "127.0.0.1" ),
-                9999
-                )
-            );
+    connect(socket);
     sendRequest(boost::make_shared<WithdrawRequest>(_sessionKey, sum), socket);
     Response resp;
     receiveResponse(resp, socket);
@@ -95,12 +97,7 @@ bool ATM::logIn(const string cardN, const unsigned PIN)
 {
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::socket socket(io_service);
-    socket.connect(
-            boost::asio::ip::tcp::endpoint(
-                boost::asio::ip::address::from_string( "127.0.0.1" ),
-                9999
-                )
-            );
+    connect(socket);
     sendRequest(boost::make_shared<LoginRequest>(cardN, PIN), socket);
     Response resp;
     receiveResponse(resp, socket);
@@ -116,12 +113,7 @@ double ATM::getBalance()
 {
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::socket socket(io_service);
-    socket.connect(
-            boost::asio::ip::tcp::endpoint(
-                boost::asio::ip::address::from_string( "127.0.0.1" ),
-                9999
-                )
-            );
+    connect(socket);
     sendRequest(boost::make_shared<GetBalanceRequest>(_sessionKey), socket);
     Response resp;
     receiveResponse(resp, socket);
@@ -134,12 +126,7 @@ bool ATM::logOut()
     if(_sessionKey == "") return true;
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::socket socket(io_service);
-    socket.connect(
-            boost::asio::ip::tcp::endpoint(
-                boost::asio::ip::address::from_string( "127.0.0.1" ),
-                9999
-                )
-            );
+    connect(socket);
     sendRequest(boost::make_shared<LogoutRequest>(_sessionKey), socket);
     Response resp;
     receiveResponse(resp, socket);
@@ -156,12 +143,7 @@ string ATM::getAdvert()
 {
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::socket socket(io_service);
-    socket.connect(
-            boost::asio::ip::tcp::endpoint(
-                boost::asio::ip::address::from_string( "127.0.0.1" ),
-                9999
-                )
-            );
+    connect(socket);
     sendRequest(boost::make_shared<GetAdvertRequest>(), socket);
     Response resp;
     receiveResponse(resp, socket);
