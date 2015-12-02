@@ -20,17 +20,6 @@ Response::~Response()
 #endif
 }
 
-void Response::getFrom(text_iarchive& ia)
-{
-    ia.register_type<Response>();
-    ia >> *this;
-}
-
-void Response::putInto(text_oarchive& oa) const
-{
-    oa.register_type<Response>();
-    oa << *this;
-}
 
 
 

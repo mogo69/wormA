@@ -89,6 +89,7 @@ Bank::Bank(const string& dbHost,
                 socket,
                 buffers
                 );
+        delete &resp;
     }
     mysql_close(connect);
 }
