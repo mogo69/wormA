@@ -35,6 +35,6 @@ void LoginRequest::serialize(Archive &ar, const unsigned int version)
 {
     ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Request);
     ar & boost::serialization::make_nvp("cardNumber", _cardNumber);
-    ar & boost::serialization::make_nvp("PIN", _PIN);;
+    ar & boost::serialization::make_nvp("PIN", _PIN);
 };
 #endif // _LOGINREQUEST_H_

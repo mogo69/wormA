@@ -1,7 +1,3 @@
-/*
- * ATM.h
- * Author: Vitalii Moholivskyi
- */
 #ifndef _ATM_H_
 #define _ATM_H_
 
@@ -29,7 +25,7 @@ public:
     double getBalance();
     bool canWithdraw(size_t sum);
     bool withdraw(const size_t amount, const bool useCreditMoney = false);
-    bool getDataAbout(const string cardN);
+    string getDataAbout(const string cardN);
     bool sendMoneyTo(const string cardN);
 
     static ATM& getInstance();

@@ -31,9 +31,10 @@ using namespace boost::archive;
 #include "../Requests/LogoutRequest.h"
 #include "../Requests/GetBalanceRequest.h"
 #include "../Requests/WithdrawRequest.h"
+#include "../Requests/GetAdvertRequest.h"
+#include "../Requests/GetDataAboutRequest.h"
 
 #include "../Responses/Response.h"
-#include "../Requests/GetAdvertRequest.h"
 
 BOOST_CLASS_EXPORT_GUID(Request, "request")
 BOOST_CLASS_EXPORT_GUID(LoginRequest, "login_request")
@@ -41,6 +42,7 @@ BOOST_CLASS_EXPORT_GUID(LogoutRequest, "logout_request")
 BOOST_CLASS_EXPORT_GUID(GetBalanceRequest, "get_balance_request")
 BOOST_CLASS_EXPORT_GUID(WithdrawRequest, "withdraw_request")
 BOOST_CLASS_EXPORT_GUID(GetAdvertRequest, "get_advert_request")
+BOOST_CLASS_EXPORT_GUID(GetDataAboutRequest, "get_data_about_request")
 
 ATM::ATM():
     _sessionKey(""),
@@ -145,6 +147,17 @@ string ATM::getAdvert()
     boost::asio::ip::tcp::socket socket(io_service);
     connect(socket);
     sendRequest(boost::make_shared<GetAdvertRequest>(), socket);
+    Response resp;
+    receiveResponse(resp, socket);
+    socket.close();
+    return resp.getMessage();
+}
+string ATM::getDataAbout(const string cardN)
+{
+    boost::asio::io_service io_service;
+    boost::asio::ip::tcp::socket socket(io_service);
+    connect(socket);
+    sendRequest(boost::make_shared<GetDataAboutRequest>(_sessionKey, cardN), socket);
     Response resp;
     receiveResponse(resp, socket);
     socket.close();
@@ -283,6 +296,5 @@ size_t ATM::InnerCash::sum(const array<size_t,5> &combination)
         result += combination[i];
     }
     return result;
-
 }
 //==================================================================================
