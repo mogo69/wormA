@@ -44,7 +44,9 @@ BOOST_CLASS_EXPORT_GUID(WithdrawRequest, "withdraw_request")
 BOOST_CLASS_EXPORT_GUID(GetAdvertRequest, "get_advert_request")
 BOOST_CLASS_EXPORT_GUID(GetDataAboutRequest, "get_data_about_request")
 
-ATM::ATM():
+ATM::ATM(const string& bankHost, const unsigned bankPort):
+    _bankHost(bankHost),
+    _bankPort(bankPort),
     _sessionKey(""),
     _innerCash(new InnerCash())
 {
@@ -61,9 +63,9 @@ ATM::~ATM()
     delete _innerCash;
 }
 
-ATM& ATM::getInstance()
+ATM& ATM::getInstance(const string& bankHost, const unsigned bankPort)
 {
-    static ATM instance;
+    static ATM instance(bankHost, bankPort);
     return instance;
 }
 
@@ -73,21 +75,13 @@ bool ATM::canWithdraw(size_t sum)
 }
 void connect(boost::asio::ip::tcp::socket& socket)
 {
-    socket.connect(
-            boost::asio::ip::tcp::endpoint(
-                boost::asio::ip::address::from_string( "127.0.0.1" ),
-                9999));
+
 }
 
 bool ATM::withdraw(const size_t sum, const bool useCreditMoney)
 {
-    boost::asio::io_service io_service;
-    boost::asio::ip::tcp::socket socket(io_service);
-    connect(socket);
-    sendRequest(boost::make_shared<WithdrawRequest>(_sessionKey, sum), socket);
     Response resp;
-    receiveResponse(resp, socket);
-    socket.close();
+    processRequest(boost::make_shared<WithdrawRequest>(_sessionKey, sum, useCreditMoney), resp);
     if(resp.wasSuccessful())
     {
         _innerCash->withdraw(sum);
@@ -97,13 +91,8 @@ bool ATM::withdraw(const size_t sum, const bool useCreditMoney)
 
 bool ATM::logIn(const string cardN, const unsigned PIN)
 {
-    boost::asio::io_service io_service;
-    boost::asio::ip::tcp::socket socket(io_service);
-    connect(socket);
-    sendRequest(boost::make_shared<LoginRequest>(cardN, PIN), socket);
     Response resp;
-    receiveResponse(resp, socket);
-    socket.close();
+    processRequest(boost::make_shared<LoginRequest>(cardN, PIN), resp);
     if(resp.wasSuccessful())
     {
         _sessionKey = resp.getMessage();
@@ -113,27 +102,15 @@ bool ATM::logIn(const string cardN, const unsigned PIN)
 
 double ATM::getBalance()
 {
-    boost::asio::io_service io_service;
-    boost::asio::ip::tcp::socket socket(io_service);
-    connect(socket);
-    sendRequest(boost::make_shared<GetBalanceRequest>(_sessionKey), socket);
     Response resp;
-    receiveResponse(resp, socket);
-    socket.close();
+    processRequest(boost::make_shared<GetBalanceRequest>(_sessionKey), resp);
     return resp.wasSuccessful() ? atof(resp.getMessage().c_str()) : -1;
 }
 
 bool ATM::logOut()
 {
-    if(_sessionKey == "") return true;
-    boost::asio::io_service io_service;
-    boost::asio::ip::tcp::socket socket(io_service);
-    connect(socket);
-    sendRequest(boost::make_shared<LogoutRequest>(_sessionKey), socket);
     Response resp;
-    receiveResponse(resp, socket);
-    socket.close();
-    cout<<resp.getMessage()<<endl;
+    processRequest(boost::make_shared<LogoutRequest>(_sessionKey), resp);
     if(resp.wasSuccessful())
     {
         _sessionKey = "";
@@ -143,28 +120,18 @@ bool ATM::logOut()
 
 string ATM::getAdvert()
 {
-    boost::asio::io_service io_service;
-    boost::asio::ip::tcp::socket socket(io_service);
-    connect(socket);
-    sendRequest(boost::make_shared<GetAdvertRequest>(), socket);
     Response resp;
-    receiveResponse(resp, socket);
-    socket.close();
+    processRequest(boost::make_shared<GetAdvertRequest>(), resp);
     return resp.getMessage();
 }
 string ATM::getDataAbout(const string cardN)
 {
-    boost::asio::io_service io_service;
-    boost::asio::ip::tcp::socket socket(io_service);
-    connect(socket);
-    sendRequest(boost::make_shared<GetDataAboutRequest>(_sessionKey, cardN), socket);
     Response resp;
-    receiveResponse(resp, socket);
-    socket.close();
+    processRequest(boost::make_shared<GetDataAboutRequest>(_sessionKey, cardN), resp);
     return resp.getMessage();
 }
 
-void ATM::sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tcp::socket& socket)
+void sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tcp::socket& socket)
 {
     boost::asio::streambuf buf;
     std::ostream os( &buf );
@@ -172,15 +139,13 @@ void ATM::sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tc
     ar & boost::serialization::make_nvp("item", req);
 
     const size_t header = buf.size();
-
-    // send header and buffer using scatter
     std::vector<boost::asio::const_buffer> buffers;
     buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
     buffers.push_back( buf.data() );
     boost::asio::write(socket, buffers);
 }
 
-void ATM::receiveResponse(Response& resp, boost::asio::ip::tcp::socket& socket)
+void receiveResponse(Response& resp, boost::asio::ip::tcp::socket& socket)
 {
     size_t header;
     boost::asio::read(socket, boost::asio::buffer(&header, sizeof(header)));
@@ -194,7 +159,19 @@ void ATM::receiveResponse(Response& resp, boost::asio::ip::tcp::socket& socket)
 
     ar & resp;
 }
+
+void ATM::processRequest(const boost::shared_ptr<Request>& req, Response& resp)
+{
+    boost::asio::io_service io_service;
+    boost::asio::ip::tcp::socket socket(io_service);
+    socket.connect( boost::asio::ip::tcp::endpoint( boost::asio::ip::address::from_string(_bankHost), _bankPort));
+    sendRequest(req, socket);
+    receiveResponse(resp, socket);
+    socket.close();
+}
+
 //=========================Inner Cash===============================================
+
 ATM::InnerCash::InnerCash(const array<size_t,5> values,
                           const array<size_t,5> ammounts):
     _numOfPockets(5),

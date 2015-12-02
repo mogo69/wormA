@@ -28,15 +28,16 @@ public:
     string getDataAbout(const string cardN);
     bool sendMoneyTo(const string cardN);
 
-    static ATM& getInstance();
+    static ATM& getInstance(const string&, const unsigned);
 private:
+    string _bankHost;
+    unsigned _bankPort;
     string _sessionKey;
     InnerCash * _innerCash;
 
-    void sendRequest(const boost::shared_ptr<Request>&, boost::asio::ip::tcp::socket&);
-    void receiveResponse(Response&, boost::asio::ip::tcp::socket&);
+    void processRequest(const boost::shared_ptr<Request>&, Response&);
 
-    ATM();
+    ATM(const string&, const unsigned);
     ATM(const ATM&);
     ATM& operator=(const ATM&);
 };

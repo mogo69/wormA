@@ -20,6 +20,17 @@ Response::Response(const Response& resp):
 
 }
 
+Response& Response::operator=(const Response& resp)
+{
+    if(this != &resp)
+    {
+        _wasSuccessful = resp.wasSuccessful();
+        _message = resp.getMessage();
+    }
+
+    return *this;
+}
+
 Response::~Response()
 {
 #ifndef NDEBUG

@@ -1,25 +1,8 @@
-/*
- * Bank.h
- * Author: Volodymyr Kuryliak
- *
- */
-
 #ifndef _BANK_H_
 #define _BANK_H_
 
 #include <string>
 using namespace std;
-
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/assume_abstract.hpp>
-#include <boost/serialization/shared_ptr.hpp>
-#include <boost/serialization/nvp.hpp>
-#include <boost/noncopyable.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/smart_ptr/shared_ptr.hpp>
-#include <boost/serialization/export.hpp>
-
-#include <mysql/mysql.h>
 
 class Bank
 {
@@ -31,12 +14,12 @@ private:
     string _host;
     size_t _port;
 
-    Bank(const string& dbHost = "db4free.net",
-        const string& dbName = "w0rm",
-        const string& dbUser = "w0rmer",
-        const string& dbPass = "qwerty123",
-        const string& host = "localhost",
-        size_t port = 9999);
+    Bank(const string& dbHost,
+        const string& dbName,
+        const string& dbUser,
+        const string& dbPass,
+        const string& host,
+        size_t port );
 
     bool takeMoney(size_t cardNumber, size_t amount, bool useCreditMoney = false);
     string getData(size_t cardNumber);
@@ -47,13 +30,17 @@ private:
     bool checkAuth(size_t cardNumber, size_t PIN);
     bool isBlocked(size_t cardNumber);
 
-//  Not used, that's why not implemented
     Bank(const Bank&);
     Bank& operator=(const Bank&);
 
 public:
     ~Bank();
-    static Bank& getInstance();
+    static Bank& getInstance(const string& dbHost,
+        const string& dbName,
+        const string& dbUser,
+        const string& dbPass,
+        const string& host,
+        size_t port);
 };
 
 #endif // _BANK_H_

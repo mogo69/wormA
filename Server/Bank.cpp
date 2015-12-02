@@ -6,11 +6,9 @@
 using namespace std;
 
 #include <boost/asio.hpp>
-
+#include <boost/serialization/export.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-
-using namespace boost::archive;
 
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
@@ -84,7 +82,16 @@ Bank::Bank(const string& dbHost,
 
         boost::shared_ptr<Request> req;
         iar & boost::serialization::make_nvp("item", req);
-        Response resp = req->process(connect);
+
+        Response resp;
+        try
+        {
+             resp = req->process(connect);
+        }
+        catch(...)
+        {
+            resp = Response(false, "Database problem");
+        }
 
         std::ostream os( &buf );
         boost::archive::text_oarchive oar( os );
@@ -107,9 +114,14 @@ Bank::~Bank()
 #endif
 }
 
-Bank& Bank::getInstance()
+Bank& Bank::getInstance(const string& dbHost,
+        const string& dbName,
+        const string& dbUser,
+        const string& dbPass,
+        const string& host,
+        size_t port)
 {
-    static Bank instance;
+    static Bank instance(dbHost, dbName, dbUser, dbPass, host, port);
     return instance;
 }
 
