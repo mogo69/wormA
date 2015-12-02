@@ -15,13 +15,13 @@ public:
     Request();
     virtual ~Request();
 
-    const Response& process(MYSQL *) const;
+    const Response process(MYSQL *) const;
 private:
     friend class boost::serialization::access;
     template <typename Archive>
     void serialize(Archive &, const unsigned);
 
-    virtual const Response& doProcess(MYSQL *) const = 0;
+    virtual const Response doProcess(MYSQL *) const = 0;
 
     Request(const Request&);
     Request& operator=(const Request&);

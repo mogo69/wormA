@@ -14,7 +14,6 @@ using namespace boost::archive;
 
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
-//#include "../Requests/LogoutRequest.h"
 
 #include "../Responses/Response.h"
 
@@ -57,6 +56,7 @@ Bank::Bank(const string& dbHost,
     boost::asio::ip::tcp::acceptor acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"),_port));
 
     cout<<"TCP Server successfuly started at host "<<host<<" on port "<<port<<endl;
+
     while (true)
     {
         boost::asio::ip::tcp::socket socket( io_service );
@@ -66,7 +66,7 @@ Bank::Bank(const string& dbHost,
         boost::asio::read(socket, boost::asio::buffer(&header, sizeof(header)));
 
         boost::asio::streambuf buf;
-        size_t rc = boost::asio::read(socket, buf.prepare( header ));
+        boost::asio::read(socket, buf.prepare( header ));
         buf.commit( header );
 
         istream is( &buf );
@@ -74,7 +74,7 @@ Bank::Bank(const string& dbHost,
 
         boost::shared_ptr<Request> req;
         iar & boost::serialization::make_nvp("item", req);
-        const Response& resp = req->process(connect);
+        Response resp = req->process(connect);
 
         std::ostream os( &buf );
         boost::archive::text_oarchive oar( os );
@@ -85,11 +85,7 @@ Bank::Bank(const string& dbHost,
         std::vector<boost::asio::const_buffer> buffers;
         buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
         buffers.push_back( buf.data() );
-        rc = boost::asio::write(
-                socket,
-                buffers
-                );
-        delete &resp;
+        boost::asio::write(socket, buffers);
     }
     mysql_close(connect);
 }

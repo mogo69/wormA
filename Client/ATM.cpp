@@ -79,10 +79,7 @@ void ATM::sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tc
     std::vector<boost::asio::const_buffer> buffers;
     buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
     buffers.push_back( buf.data() );
-    const size_t rc = boost::asio::write(
-            socket,
-            buffers
-            );
+    boost::asio::write(socket, buffers);
 }
 
 void ATM::receiveResponse(Response& resp, boost::asio::ip::tcp::socket& socket)
@@ -91,7 +88,7 @@ void ATM::receiveResponse(Response& resp, boost::asio::ip::tcp::socket& socket)
     boost::asio::read(socket, boost::asio::buffer(&header, sizeof(header)));
 
     boost::asio::streambuf buf;
-    const size_t rc = boost::asio::read(socket, buf.prepare( header ));
+    boost::asio::read(socket, buf.prepare( header ));
     buf.commit( header );
 
     istream is( &buf );

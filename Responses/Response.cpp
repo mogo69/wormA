@@ -13,6 +13,13 @@ Response::Response(const bool wasSuccessful, const string& message):
 #endif
 }
 
+Response::Response(const Response& resp):
+    _wasSuccessful(resp.wasSuccessful()),
+    _message(resp.getMessage())
+{
+
+}
+
 Response::~Response()
 {
 #ifndef NDEBUG
