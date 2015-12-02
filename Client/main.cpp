@@ -19,6 +19,7 @@ int main()
     if(atm.logIn("6771685347990238", 1783))
     {
         cout<<"Logged in successfull"<<endl;
+        cout<<atm.getBalance()<<endl;
     }
     else
     {
