@@ -16,6 +16,7 @@ int main()
         atm.withdraw(70);
     }
 */
+    cout<<atm.getAdvert()<<endl;
     //if(atm.logIn("6771685347990238", 1783))
     if(atm.logIn("6771909456273272", 7709))
     {

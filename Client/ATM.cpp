@@ -33,12 +33,14 @@ using namespace boost::archive;
 #include "../Requests/WithdrawRequest.h"
 
 #include "../Responses/Response.h"
+#include "../Requests/GetAdvertRequest.h"
 
 BOOST_CLASS_EXPORT_GUID(Request, "request")
 BOOST_CLASS_EXPORT_GUID(LoginRequest, "login_request")
 BOOST_CLASS_EXPORT_GUID(LogoutRequest, "logout_request")
 BOOST_CLASS_EXPORT_GUID(GetBalanceRequest, "get_balance_request")
 BOOST_CLASS_EXPORT_GUID(WithdrawRequest, "withdraw_request")
+BOOST_CLASS_EXPORT_GUID(GetAdvertRequest, "get_advert_request")
 
 ATM::ATM():
     _sessionKey(""),
@@ -148,6 +150,23 @@ bool ATM::logOut()
         _sessionKey = "";
     }
     return resp.wasSuccessful();
+}
+
+string ATM::getAdvert()
+{
+    boost::asio::io_service io_service;
+    boost::asio::ip::tcp::socket socket(io_service);
+    socket.connect(
+            boost::asio::ip::tcp::endpoint(
+                boost::asio::ip::address::from_string( "127.0.0.1" ),
+                9999
+                )
+            );
+    sendRequest(boost::make_shared<GetAdvertRequest>(), socket);
+    Response resp;
+    receiveResponse(resp, socket);
+    socket.close();
+    return resp.getMessage();
 }
 
 void ATM::sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tcp::socket& socket)
