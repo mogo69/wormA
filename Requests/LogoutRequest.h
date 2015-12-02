@@ -1,11 +1,13 @@
-/*#ifndef _LOGOUTREQUEST_H_
+#ifndef _LOGOUTREQUEST_H_
 #define _LOGOUTREQUEST_H_
+
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 
 #include <string>
 using namespace std;
 
 #include "Request.h"
-#include "../Responses/Response.h"
 
 class LogoutRequest: public Request
 {
@@ -21,17 +23,16 @@ private:
 
     virtual const Response& doProcess(MYSQL*) const;
 
-    virtual void doGetFrom(text_iarchive&);
-    virtual void doPutInto(text_oarchive&) const;
-
     LogoutRequest(const Request&);
     LogoutRequest& operator=(const Request&);
 };
 
+BOOST_SERIALIZATION_SHARED_PTR(LogoutRequest)
+
 template <typename Archive>
 void LogoutRequest::serialize(Archive &ar, const unsigned int version)
 {
-    ar & boost::serialization::base_object<Request>(*this);
-    ar & _sessionKey;
+    ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Request);
+    ar & boost::serialization::make_nvp("sessionKey", _sessionKey);
 };
-#endif // _LOGOUTREQUEST_H_*/
+#endif // _LOGINREQUEST_H_

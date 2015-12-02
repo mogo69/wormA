@@ -35,7 +35,7 @@ public:
 
     static ATM& getInstance();
 private:
-    string _sesionKey;
+    string _sessionKey;
     InnerCash * _innerCash;
 
     void sendRequest(const boost::shared_ptr<Request>&, boost::asio::ip::tcp::socket&);

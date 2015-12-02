@@ -29,13 +29,14 @@ using namespace boost::archive;
 #include "../Responses/Response.h"
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
-//#include "../Requests/LogoutRequest.h"
+#include "../Requests/LogoutRequest.h"
 
 BOOST_CLASS_EXPORT_GUID(Request, "request")
 BOOST_CLASS_EXPORT_GUID(LoginRequest, "login_request")
+BOOST_CLASS_EXPORT_GUID(LogoutRequest, "logout_request")
 
 ATM::ATM():
-    _sesionKey(""),
+    _sessionKey(""),
     _innerCash(new InnerCash())
 {
 #ifndef NDEBUG
@@ -116,32 +117,37 @@ bool ATM::logIn(const string cardN, const unsigned PIN)
     receiveResponse(resp, socket);
     socket.close();
     cout<<resp.getMessage()<<endl;
+    if(resp.wasSuccessful())
+    {
+        _sessionKey = resp.getMessage();
+    }
     return resp.wasSuccessful();
 }
-/*
+
 bool ATM::logOut()
 {
-
-    LogoutRequest req(_sessionKey);
-    _stream -> send(getSerializedString(req).c_str(), getSerializedString(req).size());
-    char answer[255];
-    size_t len = _stream->receive(answer, sizeof(answer));
-    answer[len] = '\0';
-
-    ss<<answer;
-
-    Response res;
-    load(res);
-
-    cout<<boolalpha;
-    cout<<"Successful: "<<res.wasSuccessful()<<endl;
-    cout<<"Message: "<<res.getMessage()<<endl;
-
-    if(res.wasSuccessful()) _sessionKey = "";w
-    return res.wasSuccessful();
+    if(_sessionKey == "") return true;
+    boost::asio::io_service io_service;
+    boost::asio::ip::tcp::socket socket(io_service);
+    socket.connect(
+            boost::asio::ip::tcp::endpoint(
+                boost::asio::ip::address::from_string( "127.0.0.1" ),
+                9999
+                )
+            );
+    sendRequest(boost::make_shared<LogoutRequest>(_sessionKey), socket);
+    Response resp;
+    receiveResponse(resp, socket);
+    socket.close();
+    cout<<resp.getMessage()<<endl;
+    if(resp.wasSuccessful())
+    {
+        _sessionKey = "";
+        return true;
+    }
 }
 
-*/
+
 //=========================Inner Cash===============================================
 ATM::InnerCash::InnerCash(const array<size_t,5> values,
                           const array<size_t,5> ammounts):

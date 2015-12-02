@@ -14,12 +14,13 @@ using namespace boost::archive;
 
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
-//#include "../Requests/LogoutRequest.h"
+#include "../Requests/LogoutRequest.h"
 
 #include "../Responses/Response.h"
 
 BOOST_CLASS_EXPORT_GUID(Request, "request")
 BOOST_CLASS_EXPORT_GUID(LoginRequest, "login_request")
+BOOST_CLASS_EXPORT_GUID(LogoutRequest, "logout_request")
 
 Bank::Bank(const string& dbHost,
         const string& dbName,

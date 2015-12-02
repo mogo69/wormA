@@ -16,7 +16,8 @@ int main()
         atm.withdraw(70);
     }
 */
-    if(atm.logIn("6771685347990238", 1783))
+    //if(atm.logIn("6771685347990238", 1783))
+    if(atm.logIn("6771909456273272", 7709))
     {
         cout<<"Logged in successfull"<<endl;
     }
@@ -24,6 +25,15 @@ int main()
     {
         cout<<"Not looged in"<<endl;
     }
+    /*if(atm.logIn("6771257034355469", 9056))
+    {
+        cout<<"Logged in successfull"<<endl;
+    }
+    else
+    {
+        cout<<"Not looged in"<<endl;
+    }*/
+    atm.logOut();
 /*    if(atm.logOut())
     //if(atm.logIn("6767207064848269564", 5406))
     {
