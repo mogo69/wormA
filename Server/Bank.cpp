@@ -94,7 +94,7 @@ Bank::Bank(const string& dbHost,
                    const Response& res=  req->process(connect);
                    stream -> send(getSerializedString(res).c_str(), getSerializedString(res).size());
 //                  Not the best solution
-                    delete &res;
+                   delete &res;
                 }
                 delete stream;
             }

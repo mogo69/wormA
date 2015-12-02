@@ -33,6 +33,7 @@ LoginRequest::~LoginRequest()
 
 const Response& LoginRequest::doProcess(MYSQL* connect) const
 {
+    cout << _cardNumber << " "<< _PIN << endl;
     mysql_query(connect, ("SELECT session_key FROM account WHERE card_number = " + _cardNumber + " AND pin = " + _PIN).c_str());
     MYSQL_ROW row = mysql_fetch_row(mysql_store_result(connect));
     if(row == 0)

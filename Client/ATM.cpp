@@ -125,15 +125,14 @@ bool ATM::logOut()
 
 */
 //=========================Inner Cash===============================================
-ATM::InnerCash::InnerCash(const size_t numOfPockets,
-        const array<size_t,5> values,
-        const array<size_t,5> ammounts):
-    _numOfPockets(numOfPockets),
-    _pockets(new Pocket[numOfPockets])
+ATM::InnerCash::InnerCash(const array<size_t,5> values,
+                          const array<size_t,5> ammounts):
+    _numOfPockets(5),
+    _pockets(new Pocket[_numOfPockets])
 {
 #ifndef NDEBUG
 #endif
-    for(size_t i = 0; i < numOfPockets; i++)
+    for(size_t i = 0; i < _numOfPockets; i++)
     {
         _pockets[i]._value = values[i];
         _pockets[i]._ammount = ammounts[i];
