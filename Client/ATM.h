@@ -25,7 +25,6 @@ public:
     bool logIn(const string cardN, const unsigned PIN);
     bool logOut();
     bool changePIN(const size_t PIN);
-    bool hasAdvert();
     string getAdvert();
     double getBalance();
     bool canWithdraw(size_t sum);

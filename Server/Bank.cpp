@@ -16,6 +16,7 @@ using namespace boost::archive;
 #include "../Requests/LoginRequest.h"
 #include "../Requests/LogoutRequest.h"
 #include "../Requests/GetBalanceRequest.h"
+#include "../Requests/WithdrawRequest.h"
 
 #include "../Responses/Response.h"
 
@@ -23,6 +24,7 @@ BOOST_CLASS_EXPORT_GUID(Request, "request")
 BOOST_CLASS_EXPORT_GUID(LoginRequest, "login_request")
 BOOST_CLASS_EXPORT_GUID(LogoutRequest, "logout_request")
 BOOST_CLASS_EXPORT_GUID(GetBalanceRequest, "get_balance_request")
+BOOST_CLASS_EXPORT_GUID(WithdrawRequest, "withdraw_request")
 
 Bank::Bank(const string& dbHost,
         const string& dbName,

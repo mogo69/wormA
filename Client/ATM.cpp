@@ -26,16 +26,19 @@ std::stringstream ss;
 #include <boost/archive/text_iarchive.hpp>
 using namespace boost::archive;
 
-#include "../Responses/Response.h"
 #include "../Requests/Request.h"
 #include "../Requests/LoginRequest.h"
 #include "../Requests/LogoutRequest.h"
 #include "../Requests/GetBalanceRequest.h"
+#include "../Requests/WithdrawRequest.h"
+
+#include "../Responses/Response.h"
 
 BOOST_CLASS_EXPORT_GUID(Request, "request")
 BOOST_CLASS_EXPORT_GUID(LoginRequest, "login_request")
 BOOST_CLASS_EXPORT_GUID(LogoutRequest, "logout_request")
 BOOST_CLASS_EXPORT_GUID(GetBalanceRequest, "get_balance_request")
+BOOST_CLASS_EXPORT_GUID(WithdrawRequest, "withdraw_request")
 
 ATM::ATM():
     _sessionKey(""),
@@ -62,46 +65,30 @@ ATM& ATM::getInstance()
 
 bool ATM::canWithdraw(size_t sum)
 {
-    return _innerCash->canWithdraw(sum);
+    return (sum < getBalance() && _innerCash->canWithdraw(sum));
 }
 
 bool ATM::withdraw(const size_t sum, const bool useCreditMoney)
 {
-    return _innerCash->withdraw(sum);
+    boost::asio::io_service io_service;
+    boost::asio::ip::tcp::socket socket(io_service);
+    socket.connect(
+            boost::asio::ip::tcp::endpoint(
+                boost::asio::ip::address::from_string( "127.0.0.1" ),
+                9999
+                )
+            );
+    sendRequest(boost::make_shared<WithdrawRequest>(_sessionKey, sum), socket);
+    Response resp;
+    receiveResponse(resp, socket);
+    socket.close();
+    if(resp.wasSuccessful())
+    {
+        _innerCash->withdraw(sum);
+    }
+    return resp.wasSuccessful();
 }
 
-void ATM::sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tcp::socket& socket)
-{
-    boost::asio::streambuf buf;
-    std::ostream os( &buf );
-    boost::archive::text_oarchive ar( os );
-    ar & boost::serialization::make_nvp("item", req);
-
-    const size_t header = buf.size();
-
-    // send header and buffer using scatter
-    std::vector<boost::asio::const_buffer> buffers;
-    buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
-    buffers.push_back( buf.data() );
-    boost::asio::write(socket, buffers);
-}
-
-void ATM::receiveResponse(Response& resp, boost::asio::ip::tcp::socket& socket)
-{
-    size_t header;
-    boost::asio::read(socket, boost::asio::buffer(&header, sizeof(header)));
-
-    boost::asio::streambuf buf;
-    boost::asio::read(socket, buf.prepare( header ));
-    buf.commit( header );
-
-    istream is( &buf );
-    boost::archive::text_iarchive ar( is );
-
-    ar & resp;
-}
-
-//==================================================================================
 bool ATM::logIn(const string cardN, const unsigned PIN)
 {
     boost::asio::io_service io_service;
@@ -163,7 +150,36 @@ bool ATM::logOut()
     return resp.wasSuccessful();
 }
 
+void ATM::sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tcp::socket& socket)
+{
+    boost::asio::streambuf buf;
+    std::ostream os( &buf );
+    boost::archive::text_oarchive ar( os );
+    ar & boost::serialization::make_nvp("item", req);
 
+    const size_t header = buf.size();
+
+    // send header and buffer using scatter
+    std::vector<boost::asio::const_buffer> buffers;
+    buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
+    buffers.push_back( buf.data() );
+    boost::asio::write(socket, buffers);
+}
+
+void ATM::receiveResponse(Response& resp, boost::asio::ip::tcp::socket& socket)
+{
+    size_t header;
+    boost::asio::read(socket, boost::asio::buffer(&header, sizeof(header)));
+
+    boost::asio::streambuf buf;
+    boost::asio::read(socket, buf.prepare( header ));
+    buf.commit( header );
+
+    istream is( &buf );
+    boost::archive::text_iarchive ar( is );
+
+    ar & resp;
+}
 //=========================Inner Cash===============================================
 ATM::InnerCash::InnerCash(const array<size_t,5> values,
                           const array<size_t,5> ammounts):
