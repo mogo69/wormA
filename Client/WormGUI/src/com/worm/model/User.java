@@ -2,23 +2,23 @@ package com.worm.model;
 
 public class User {
 	
-	private User(long cardN){
+	public User(String cardN){
 		this.cardN = cardN;
 	}
 	
-	public static User getUserInstance(long cardN){
+	public static User getUserInstance(String cardN){
 		if (user == null){
 			user = new User(cardN);
 		}
 		return user;
 	}
 	
-	public void setCardN(long cardN){
+	public void setCardN(String cardN){
 		this.cardN = cardN;
 		return;
 	}
 	
-	public long getCardN(){
+	public String getCardN(){
 		return this.cardN;
 	}
 	
@@ -31,7 +31,7 @@ public class User {
 		return this.balance;
 	}
 	
-	private long cardN;
+	private String cardN;
 	private boolean isBlocked = false;
 	private double balance;
 	

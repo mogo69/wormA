@@ -45,24 +45,11 @@ public class CardDragAndDropListener implements DropTargetListener {
 	public void drop(DropTargetDropEvent event) {
 		event.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 		Transferable transferable = event.getTransferable();
-		// DataFlavor[] flavors = transferable.getTransferDataFlavors();
-		// for (DataFlavor flavor : flavors) {
-		// try {
-		// if (flavor.isFlavorJavaFileListType()) {
-		// List<File> files = (List<File>) transferable.getTransferData(flavor);
-		// for (File file : files) {
-		// System.out.println(file.getPath());
-		// }
-		// }
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// }
 		DataFlavor flavor = transferable.getTransferDataFlavors()[0];
 		try {
 			if (flavor.isFlavorJavaFileListType()) {
 				File file = ((List<File>) transferable.getTransferData(flavor)).get(0);
-				MainController.getMainControllerInstance().getMainFrame().getCardReaderPanel().getCardReader().setReaderText("<html><center>Your card number:<br>" + file.getName() + "</center>"); 
+				MainController.getMainControllerInstance().getMainFrame().getCardReaderPanel().getCardReader().setReaderText(file.getName()); 
 				MainController.getMainControllerInstance().setState(states.LOGIN);
 				MainController.getMainControllerInstance().getMainFrame().getCardReaderPanel().getCardReader().disableListener();
 			}

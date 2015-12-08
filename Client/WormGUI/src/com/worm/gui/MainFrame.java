@@ -1,7 +1,5 @@
 package com.worm.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,6 +9,8 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import com.worm.jni.AtmJniProxy;
 
 public class MainFrame extends JFrame{
 
@@ -26,6 +26,13 @@ public class MainFrame extends JFrame{
 		return mainframe;
 	}
 	
+	public static AtmJniProxy getAtmJniProxy(){
+		if (atm_jni == null){
+			atm_jni = AtmJniProxy.getInstance();
+		}
+		return atm_jni;
+	}
+	
 	public ScreenPanel getScreenPanel(){
 		return this.screen_panel;
 	}
@@ -34,6 +41,14 @@ public class MainFrame extends JFrame{
 		return this.cardreader_panel;
 	}
 	
+	public ControlKeyboard getControlKeyboard() {
+		return control_keyboard;
+	}
+
+	public void setControlKeyboard(ControlKeyboard control_keyboard) {
+		this.control_keyboard = control_keyboard;
+	}
+
 	private void configure() /*throws Exception*/{
 		this.createElements();
 		this.addElements();
@@ -115,6 +130,8 @@ public class MainFrame extends JFrame{
 	private CardReaderPanel cardreader_panel;
 	private ControlKeyboard control_keyboard;
 	private DigitalKeyboard digital_keyboard;
+	
+	private static AtmJniProxy atm_jni;
 	
 	private JPanel digital_panel;
 	private static MainFrame mainframe;

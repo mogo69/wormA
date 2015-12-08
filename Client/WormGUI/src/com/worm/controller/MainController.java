@@ -1,16 +1,17 @@
 package com.worm.controller;
 
-import com.worm.controller.GUIConstants.states;
+import com.worm.controller.GUIConstants.*;
 import com.worm.gui.MainFrame;
 import com.worm.listeners.GetCashAction;
 import com.worm.listeners.LoginAction;
+import com.worm.listeners.LogoutAction;
 import com.worm.model.User;
 
 public class MainController {
 
 	public MainController() {
 		mainframe = MainFrame.getMainFrameInstance();
-//		atm = ATM.getInstance();
+		// atm = ATM.getInstance();
 
 	}
 
@@ -23,6 +24,10 @@ public class MainController {
 
 	public User getUser() {
 		return this.user;
+	}
+	
+	public void setUser(User user){
+		this.user = user;
 	}
 
 	public MainFrame getMainFrame() {
@@ -58,7 +63,8 @@ public class MainController {
 
 	@SuppressWarnings("static-access")
 	private void setDefaultState() {
-		this.mainframe.getScreenPanel().getScreen().setLabelOnArea("<html><center>Welcome to ~WOrM ATM!<br>Insert card to begin.</center>");
+		this.mainframe.getScreenPanel().getScreen()
+				.setLabelOnArea("<html><center>Welcome to ~WOrM ATM!<br>Insert card to begin.</center>");
 		this.mainframe.getScreenPanel().getScreen().setLeftCaptions(GUIConstants.getDefaultLeftCaptions());
 		this.mainframe.getScreenPanel().getScreen().setRightCaptions(GUIConstants.getDefaultRightCaptions());
 		// this.mainframe.getScreenPanel().getScreen().setAllCaptionsVisibility(false);
@@ -70,6 +76,7 @@ public class MainController {
 		MainController.mainframe.getScreenPanel().getScreen().setLabelAndTextFieldOnArea("Enter your PIN here: ");
 		MainController.mainframe.getScreenPanel().getScreen().setLeftCaptions(GUIConstants.getLoginLeftCaptions());
 		MainController.mainframe.getScreenPanel().getScreen().setRightCaptions(GUIConstants.getLoginRightCaptions());
+		MainController.mainframe.getScreenPanel().setButtonListener(true, 3, new LogoutAction());
 		MainController.mainframe.getScreenPanel().setButtonListener(false, 3, new LoginAction());
 	}
 
@@ -93,7 +100,7 @@ public class MainController {
 
 	private static MainFrame mainframe;
 
-//	private ATM atm;
+	// private ATM atm;
 
 	private User user;
 

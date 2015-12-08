@@ -41,6 +41,12 @@ public class CardReader extends JPanel{
 		return;
 	}
 	
+	
+	
+	public JLabel getCardNumField() {
+		return card_num_field;
+	}
+
 	private void setCardReaderProperties(){
 		cardDnDListener = new CardDragAndDropListener();
 		droptarget = new DropTarget(this, cardDnDListener);

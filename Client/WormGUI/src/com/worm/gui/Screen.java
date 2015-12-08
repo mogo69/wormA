@@ -43,6 +43,11 @@ public class Screen extends JPanel {
 		}
 	}
 	
+	public JTextField getTextField() {
+		return textfield;
+	}
+
+	
 	private void configure() {
 		this.setScreenProperties();
 		this.createCaptions();
