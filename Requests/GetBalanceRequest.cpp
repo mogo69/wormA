@@ -22,3 +22,8 @@ const Response GetBalanceRequest::doProcess(MYSQL* connect) const
     }
     return Response(true, row[0]);
 }
+
+string GetBalanceRequest::doGetSessionKey() const
+{
+    return _sessionKey;
+}

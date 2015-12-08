@@ -84,13 +84,48 @@ Bank::Bank(const string& dbHost,
         iar & boost::serialization::make_nvp("item", req);
 
         Response resp;
-        try
+
+        if(req->getSessionKey() == "")
         {
-             resp = req->process(connect);
+            try
+            {
+                //dynamic_cast<boost::shared_ptr<LoginRequest>>(req));
+                try
+                {
+                     resp = req->process(connect);
+                }
+                catch(...)
+                {
+                    resp = Response(false, "Database problem");
+                }
+
+            }
+            catch(...)
+            {
+                resp = Response(false, "You do not use session key");
+            }
+
         }
-        catch(...)
+        else
         {
-            resp = Response(false, "Database problem");
+            mysql_query(connect, ("SELECT session_key FROM account WHERE session_key = '" + req->getSessionKey() + "'").c_str());
+            MYSQL_ROW row = mysql_fetch_row(mysql_store_result(connect));
+
+            if(row == 0)
+            {
+                resp = Response(false, "You, son of a bitch, you can't hack our system!!!");
+            }
+            else
+            {
+                try
+                {
+                     resp = req->process(connect);
+                }
+                catch(...)
+                {
+                    resp = Response(false, "Database problem");
+                }
+            }
         }
 
         std::ostream os( &buf );

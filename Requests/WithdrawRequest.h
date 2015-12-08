@@ -24,6 +24,7 @@ private:
     void serialize(Archive &ar, const unsigned int version);
 
     virtual const Response doProcess(MYSQL*) const;
+    virtual string doGetSessionKey() const;
 
     WithdrawRequest(const Request&);
     WithdrawRequest& operator=(const Request&);

@@ -1,4 +1,4 @@
-//#define NDEBUG
+#define NDEBUG
 
 #include "ATM.h"
 
@@ -93,6 +93,7 @@ bool ATM::logIn(const string cardN, const unsigned PIN)
 {
     Response resp;
     processRequest(boost::make_shared<LoginRequest>(cardN, PIN), resp);
+//    cout<<resp.getMessage()<<endl;
     if(resp.wasSuccessful())
     {
         _sessionKey = resp.getMessage();
