@@ -1,5 +1,5 @@
 #include <jni.h>
-#include "com_worm_jni_AtmJniProxy.h"
+#include "atmjniproxy.h"
 #include "ATM.h"
 
 JNIEXPORT jboolean JNICALL Java_com_worm_jni_AtmJniProxy_isBlocked
