@@ -73,7 +73,7 @@ ATM& ATM::getInstance(const string& bankHost, const unsigned bankPort)
 
 bool ATM::canWithdraw(size_t sum)
 {
-    return (sum < getBalance() && _innerCash->canWithdraw(sum));
+    return (sum <= getBalance() && _innerCash->canWithdraw(sum));
 }
 void connect(boost::asio::ip::tcp::socket& socket)
 {
