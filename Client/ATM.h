@@ -17,16 +17,15 @@ class ATM
 public:
     class InnerCash;
     ~ATM();
-    bool isBlocked();
     bool logIn(const string cardN, const unsigned PIN);
     bool logOut();
     bool changePIN(const size_t PIN);
     string getAdvert();
     double getBalance();
     bool canWithdraw(size_t sum);
-    bool withdraw(const size_t amount, const bool useCreditMoney = false);
+    bool withdraw(const size_t sum, const bool useCreditMoney = false);
     string getDataAbout(const string cardN);
-    bool sendMoneyTo(const string cardN);
+    bool sendMoneyTo(double sum, const string cardN);
 
     static ATM& getInstance(const string&, const unsigned);
 private:

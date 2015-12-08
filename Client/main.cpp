@@ -11,8 +11,9 @@ int main()
     {
         cout<<"Logged in successfull"<<endl;
         cout<<atm.getBalance()<<endl;
-        atm.withdraw(10);
+        //atm.withdraw(10);
         cout<<atm.getDataAbout("6771172914064622")<<endl;
+        atm.sendMoneyTo(1023,"6771172914064622");
     }
     else
     {
