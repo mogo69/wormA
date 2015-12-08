@@ -1,6 +1,7 @@
 #include "GetAdvertRequest.h"
 
-GetAdvertRequest::GetAdvertRequest()
+GetAdvertRequest::GetAdvertRequest(const string& sessionKey):
+    _sessionKey(sessionKey)
 {
 
 }
@@ -19,4 +20,9 @@ const Response GetAdvertRequest::doProcess(MYSQL* connect) const
         return Response(false, "");
     }
     return Response(true, row[0]);
+}
+
+string GetAdvertRequest::doGetSessionKey() const
+{
+    return _sessionKey;
 }

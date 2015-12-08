@@ -12,15 +12,17 @@ using namespace std;
 class GetAdvertRequest: public Request
 {
 public:
-    GetAdvertRequest();
+    GetAdvertRequest(const string& sessionKey="");
     virtual ~GetAdvertRequest();
 private:
+    string _sessionKey;
 
     friend class boost::serialization::access;
     template <typename Archive>
     void serialize(Archive &ar, const unsigned int version);
 
     virtual const Response doProcess(MYSQL*) const;
+    virtual string doGetSessionKey() const;
 
     GetAdvertRequest(const Request&);
     GetAdvertRequest& operator=(const Request&);

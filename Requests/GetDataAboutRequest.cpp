@@ -35,3 +35,8 @@ const Response GetDataAboutRequest::doProcess(MYSQL* connect) const
     return Response(true, row[0]);
 }
 
+string GetDataAboutRequest::doGetSessionKey() const
+{
+    return _sessionKey;
+}
+

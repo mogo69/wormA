@@ -51,6 +51,11 @@ const Response SendMoneyToRequest::doProcess(MYSQL* connect) const
     return Response(true, "Transfer was successful.");
 }
 
+string SendMoneyToRequest::doGetSessionKey() const
+{
+    return _sessionKey;
+}
+
 
 
 

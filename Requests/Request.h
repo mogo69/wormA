@@ -16,12 +16,14 @@ public:
     virtual ~Request();
 
     const Response process(MYSQL *) const;
+    string getSessionKey() const;
 private:
     friend class boost::serialization::access;
     template <typename Archive>
     void serialize(Archive &, const unsigned);
 
     virtual const Response doProcess(MYSQL *) const = 0;
+    virtual string doGetSessionKey() const = 0;
 
     Request(const Request&);
     Request& operator=(const Request&);
