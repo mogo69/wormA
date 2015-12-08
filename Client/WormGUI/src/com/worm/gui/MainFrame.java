@@ -64,6 +64,13 @@ public class MainFrame extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.pack();
 		this.setVisible(true);
+		this.addWindowListener(new java.awt.event.WindowAdapter(){
+			
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent){
+				AtmJniProxy.getInstance().logOut();
+			}
+		});
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
 	

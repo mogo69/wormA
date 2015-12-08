@@ -45,6 +45,8 @@ public class MainController {
 		case MAIN_MENU:
 			setMainMenuState();
 			break;
+		case GET_BALANCE:
+			
 		case GET_CASH:
 			setGettingCashState();
 			break;
@@ -88,8 +90,11 @@ public class MainController {
 		return;
 	}
 
+	private void setGettingBalanceState(){
+//		MainController.mainframe.getScreenPanel().se
+	}
+	
 	private void setGettingCashState() {
-
 		MainController.mainframe.getScreenPanel().setButtonListener(false, 3, new GetCashAction());
 	}
 

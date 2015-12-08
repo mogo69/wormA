@@ -35,5 +35,5 @@ public class GUIConstants {
 	private static final String[][] blocked_captions = {{"", "", "", "Exit"}, {"", "", "", ""}};
 	private static final String[][] default_captions = {{"", "", "", ""}, {"", "", "", ""}}; 
 	
-	public enum states {DEFAULT, LOGIN, MAIN_MENU, GET_CASH, BALANCE, BLOCKED};
+	public enum states {DEFAULT, LOGIN, MAIN_MENU, GET_CASH, GET_BALANCE, BLOCKED};
 }
