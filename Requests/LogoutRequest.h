@@ -22,6 +22,7 @@ private:
     void serialize(Archive &ar, const unsigned int version);
 
     virtual const Response doProcess(MYSQL*) const;
+    virtual string doGetSessionKey() const;
 
     LogoutRequest(const Request&);
     LogoutRequest& operator=(const Request&);

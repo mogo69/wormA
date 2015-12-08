@@ -71,3 +71,8 @@ const Response LoginRequest::doProcess(MYSQL* connect) const
     }
     return Response(false, "Something went wrong");
 }
+
+string LoginRequest::doGetSessionKey() const
+{
+    return "";
+}

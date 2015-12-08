@@ -15,12 +15,17 @@ Request::Request()
 Request::~Request()
 {
 #ifndef NDEBUG
-    cout<<"Request was deleted"<<endl;
+    cout<<"Request was ++ deleted"<<endl;
 #endif
 }
 
 const Response Request::process(MYSQL * connect) const
 {
     return doProcess(connect);
+}
+
+string Request::getSessionKey() const
+{
+    return doGetSessionKey();
 }
 

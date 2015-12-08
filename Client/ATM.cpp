@@ -1,4 +1,4 @@
-//#define NDEBUG
+#define NDEBUG
 
 #include "ATM.h"
 
@@ -33,6 +33,7 @@ using namespace boost::archive;
 #include "../Requests/WithdrawRequest.h"
 #include "../Requests/GetAdvertRequest.h"
 #include "../Requests/GetDataAboutRequest.h"
+#include "../Requests/SendMoneyToRequest.h"
 
 #include "../Responses/Response.h"
 
@@ -43,6 +44,7 @@ BOOST_CLASS_EXPORT_GUID(GetBalanceRequest, "get_balance_request")
 BOOST_CLASS_EXPORT_GUID(WithdrawRequest, "withdraw_request")
 BOOST_CLASS_EXPORT_GUID(GetAdvertRequest, "get_advert_request")
 BOOST_CLASS_EXPORT_GUID(GetDataAboutRequest, "get_data_about_request")
+BOOST_CLASS_EXPORT_GUID(SendMoneyToRequest, "send_money_to_request")
 
 ATM::ATM(const string& bankHost, const unsigned bankPort):
     _bankHost(bankHost),
@@ -71,7 +73,7 @@ ATM& ATM::getInstance(const string& bankHost, const unsigned bankPort)
 
 bool ATM::canWithdraw(size_t sum)
 {
-    return (sum < getBalance() && _innerCash->canWithdraw(sum));
+    return (sum <= getBalance() && _innerCash->canWithdraw(sum));
 }
 void connect(boost::asio::ip::tcp::socket& socket)
 {
@@ -93,6 +95,7 @@ bool ATM::logIn(const string cardN, const unsigned PIN)
 {
     Response resp;
     processRequest(boost::make_shared<LoginRequest>(cardN, PIN), resp);
+//    cout<<resp.getMessage()<<endl;
     if(resp.wasSuccessful())
     {
         _sessionKey = resp.getMessage();
@@ -129,6 +132,13 @@ string ATM::getDataAbout(const string cardN)
     Response resp;
     processRequest(boost::make_shared<GetDataAboutRequest>(_sessionKey, cardN), resp);
     return resp.getMessage();
+}
+
+bool ATM::sendMoneyTo(const double sum, const string cardN)
+{
+    Response resp;
+    processRequest(boost::make_shared<SendMoneyToRequest>(_sessionKey,sum, cardN), resp);
+    return resp.wasSuccessful();
 }
 
 void sendRequest(const boost::shared_ptr<Request>& req, boost::asio::ip::tcp::socket& socket)

@@ -41,5 +41,10 @@ const Response WithdrawRequest::doProcess(MYSQL* connect) const
     return Response(true, "Withdraw was successful.");
 }
 
+string WithdrawRequest::doGetSessionKey() const
+{
+    return _sessionKey;
+}
+
 
 
