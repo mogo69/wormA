@@ -5,15 +5,13 @@ using namespace std;
 
 int main()
 {
-    ATM& atm = ATM::getInstance("127.0.0.1", 9999);
-
-    cout<<atm.getAdvert()<<endl;
-    if(atm.logIn("6771909456273272", 7709))
+    ATM& atm = ATM::getInstance("192.168.0.108", 9999);
+//    cout<<atm.getAdvert();
+    if(atm.logIn("0604229556198639", 3489))
     {
         cout<<"Logged in successfull"<<endl;
- //       cout<<"Balance: "<<atm.getBalance()<<endl;
-        const string anotherCard = "6771685347990238";
-        const unsigned sum = 100;
+        const string anotherCard = "0604384783441263";
+        const unsigned sum = 1;
         cout<<"Sending of $"<<sum<<" to "<<anotherCard<<(atm.sendMoneyTo(sum, anotherCard)? " was successfull" : " failed")<<endl;
     }
     else
