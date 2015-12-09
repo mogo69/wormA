@@ -21,7 +21,7 @@ public:
     const bool block(const string& cardNumber);
     const bool logIn(const string& cardNumber, const unsigned PIN);
     const bool logOut();
-    const bool changePIN(const unsigned PIN);
+//    const bool changePIN(const unsigned PIN);
     const string getAdvert();
     const double getBalance();
     const bool canWithdraw(const unsigned sum);

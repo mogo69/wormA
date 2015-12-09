@@ -28,13 +28,19 @@ string to_string( const T& n )
 
 const Response SendMoneyToRequest::doProcess(MYSQL* connect) const
 {
-    mysql_query(connect, ("SELECT balance FROM account WHERE session_key = '" + _sessionKey + "'").c_str());
+    mysql_query(connect, ("SELECT balance, card_number FROM account WHERE session_key = '" + _sessionKey + "'").c_str());
     MYSQL_ROW row = mysql_fetch_row(mysql_store_result(connect));
     if(row == 0)
     {
         return Response(false, "You session has been expired");
     }
     double balance = atof(row[0]);
+
+    if(row[1] == _cardNumber)
+    {
+        return Response(true, "This is the same card");
+    }
+
     if(balance < _sum) return Response(false, "You haven't such amount of money.");
 
     mysql_query(connect, ("SELECT balance FROM account WHERE card_number = '" + _cardNumber + "'").c_str());

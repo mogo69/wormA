@@ -152,7 +152,7 @@ void processRequests(MYSQL* connect, boost::asio::io_service& io_service, boost:
                 }
                 catch(...)
                 {
-                    resp = Response(false, "You do not use session key");
+                    resp = Response(false, "Session key is not set");
                 }
             }
         }
