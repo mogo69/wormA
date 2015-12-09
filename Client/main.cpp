@@ -10,9 +10,18 @@ int main()
     if(atm.logIn("0604229556198639", 3489))
     {
         cout<<"Logged in successfull"<<endl;
+
         const string anotherCard = "0604384783441263";
         const unsigned sum = 1;
         cout<<"Sending of $"<<sum<<" to "<<anotherCard<<(atm.sendMoneyTo(sum, anotherCard)? " was successfull" : " failed")<<endl;
+
+      /*  cout<<"Balance: "<<atm.getBalance()<<endl;
+        cout<<"Balance: "<<atm.withdraw(9000, true)<<endl;
+        cout<<"Balance: "<<atm.getBalance()<<endl;
+ //       const string anotherCard = "6771685347990238";*/
+ //       const unsigned sum = 100;
+ //       cout<<"Sending of $"<<sum<<" to "<<anotherCard<<(atm.sendMoneyTo(sum, anotherCard)? " was successfull" : " failed")<<endl;
+
     }
     else
     {
