@@ -5,8 +5,9 @@ using namespace std;
 
 int main()
 {
-    ATM& atm = ATM::getInstance("192.168.0.108", 9999);
-    cout<<atm.getAdvert();
+    ATM& atm = ATM::getInstance("127.0.0.1", 9999);
+
+    cout<<atm.getAdvert()<<endl;
     if(atm.logIn("6771909456273272", 7709))
     {
         cout<<"Logged in successfull"<<endl;
