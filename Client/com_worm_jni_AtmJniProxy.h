@@ -74,9 +74,9 @@ JNIEXPORT jboolean JNICALL Java_com_worm_jni_AtmJniProxy_withdraw
 /*
  * Class:     com_worm_jni_AtmJniProxy
  * Method:    getDataAbout
- * Signature: (I)Z
+ * Signature: (I)Ljava/lang/String;
  */
-JNIEXPORT jboolean JNICALL Java_com_worm_jni_AtmJniProxy_getDataAbout
+JNIEXPORT jstring JNICALL Java_com_worm_jni_AtmJniProxy_getDataAbout
   (JNIEnv *, jobject, jint);
 
 /*

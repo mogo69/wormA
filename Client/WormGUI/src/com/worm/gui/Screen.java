@@ -44,9 +44,12 @@ public class Screen extends JPanel {
 	}
 	
 	public JTextField getTextField() {
-		return textfield;
+		return this.textfield;
 	}
 
+	public JLabel getTextLabel(){
+		return this.central_text;
+	}
 	
 	private void configure() {
 		this.setScreenProperties();

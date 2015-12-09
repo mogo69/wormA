@@ -23,12 +23,12 @@ public class LogoutAction extends AbstractAction {
 				MainController.getMainControllerInstance().setUser(null);
 			}
 		}
-		try {
-			Runtime.getRuntime().exec("eject");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+//		try {
+//			Runtime.getRuntime().exec("eject");
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		MainController.getMainControllerInstance().setState(states.DEFAULT);
 	}
 
