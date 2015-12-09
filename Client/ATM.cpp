@@ -73,11 +73,13 @@ ATM& ATM::getInstance(const string& bankHost, const unsigned bankPort)
 
 const bool ATM::canWithdraw(const unsigned sum)
 {
-    return (sum <= getBalance() && _innerCash->canWithdraw(sum));
+    return (_innerCash->canWithdraw(sum) && sum <= getBalance());
 }
 
 const bool ATM::withdraw(const unsigned sum, const bool useCreditMoney)
 {
+    cout << (_innerCash->canWithdraw(sum)) <<endl;
+    if(_innerCash->canWithdraw(sum) == false ) return false;
     Response resp;
     processRequest(boost::make_shared<WithdrawRequest>(_sessionKey, sum, useCreditMoney), resp);
     if(resp.wasSuccessful())
@@ -242,6 +244,7 @@ vector<array<size_t,5>> ATM::InnerCash::findSolutions(const size_t sum, size_t p
 				{
 					array<size_t,5> newCombination = combination;
 					newCombination[i]++;
+					if (solutions.size()>=10) break;
 					vector<array<size_t,5>> newSolutions = findSolutions(sum, i, newCombination);
 					if (!newSolutions.empty())
 					{
