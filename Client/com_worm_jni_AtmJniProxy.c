@@ -14,7 +14,7 @@ extern "C" {
 }*/
 
 JNIEXPORT jboolean JNICALL Java_com_worm_jni_AtmJniProxy_logIn
-(JNIEnv *env, jobject, jstring cardN, jint PIN)
+  (JNIEnv *env, jobject, jstring cardN, jint PIN)
 {
 	jboolean isCopy = false;
 	const char *cardN_char = (*env).GetStringUTFChars(cardN, &isCopy);
@@ -44,6 +44,14 @@ JNIEXPORT jboolean JNICALL Java_com_worm_jni_AtmJniProxy_canWithdraw
 	ATM &atm = ATM::getInstance("127.0.0.1", 9999);
 	int sum_int = (int) sum;
 	return atm.canWithdraw(sum_int);
+}
+
+JNIEXPORT jboolean JNICALL Java_com_worm_jni_AtmJniProxy_withdraw
+  (JNIEnv *, jobject, jlong sum, jboolean use_cresit_money)
+{
+	ATM &atm = ATM::getInstance("127.0.0.1", 9999);
+	int sum_long = (long) sum;
+	return atm.withdraw(sum_long, use_cresit_money);
 }
 
 #ifdef __cplusplus

@@ -10,7 +10,7 @@ public class AtmJniProxy {
 	public native double getBalance();
 	public native boolean canWithdraw(int sum);
 	public native boolean withdraw(long amount, boolean useCreditMoney);
-	public native boolean getDataAbout(int cardN);
+	public native String getDataAbout(int cardN);
 	public native boolean sendMoneyTo(int cardN);
 
 	public static AtmJniProxy getInstance(){

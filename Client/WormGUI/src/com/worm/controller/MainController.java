@@ -1,8 +1,14 @@
 package com.worm.controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import com.worm.controller.GUIConstants.*;
 import com.worm.gui.MainFrame;
+import com.worm.listeners.GetBalanceAction;
 import com.worm.listeners.GetCashAction;
+import com.worm.listeners.GetCashMenuAction;
 import com.worm.listeners.LoginAction;
 import com.worm.listeners.LogoutAction;
 import com.worm.model.User;
@@ -18,6 +24,12 @@ public class MainController {
 	public static MainController getMainControllerInstance() {
 		if (maincontroller == null) {
 			maincontroller = new MainController();
+//			try {
+//				Runtime.getRuntime().exec("eject");
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		return maincontroller;
 	}
@@ -46,7 +58,7 @@ public class MainController {
 			setMainMenuState();
 			break;
 		case GET_BALANCE:
-			
+			setGettingBalanceState();
 		case GET_CASH:
 			setGettingCashState();
 			break;
@@ -87,14 +99,44 @@ public class MainController {
 				"<html><center>Welcome to our ATM!<br>Here you can administrate your cards.<br>Choose an action below you want to perform.<center>");
 		MainController.mainframe.getScreenPanel().getScreen().setLeftCaptions(GUIConstants.getMainMenuLeftCaptions());
 		MainController.mainframe.getScreenPanel().getScreen().setRightCaptions(GUIConstants.getMainMenuRightCaptions());
+//		It already set.
+//		MainController.mainframe.getScreenPanel().setButtonListener(true, 3, new LogoutAction());
+		MainController.mainframe.getScreenPanel().setButtonListener(false, 2, new GetBalanceAction());
+		MainController.mainframe.getScreenPanel().setButtonListener(false, 3, new GetCashMenuAction());
 		return;
 	}
 
 	private void setGettingBalanceState(){
-//		MainController.mainframe.getScreenPanel().se
+		MainController.mainframe.getScreenPanel().getScreen().setLeftCaptions(GUIConstants.getGetBalanceLeftCaptions());
+		MainController.mainframe.getScreenPanel().getScreen().setRightCaptions(GUIConstants.getGetBalanceRightCaptions());
+		MainController.mainframe.getScreenPanel().setButtonListener(false, 3, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainController.getMainControllerInstance().setState(states.MAIN_MENU);
+			}
+			
+		});
+		for (int i : new int[]{0, 1, 2}){
+			MainController.mainframe.getScreenPanel().setButtonListener(false, i, null);
+			MainController.mainframe.getScreenPanel().setButtonListener(false, i, null);
+		}
 	}
 	
 	private void setGettingCashState() {
+		MainController.mainframe.getScreenPanel().getScreen().setLabelAndTextFieldOnArea("Enter sum you want to get: ");
+		MainController.mainframe.getScreenPanel().getScreen().setLeftCaptions(GUIConstants.getGetCashLeftCaptions());
+		MainController.mainframe.getScreenPanel().getScreen().setRightCaptions(GUIConstants.getGetCashRightCaptions());
+//		It already set.
+//		MainController.mainframe.getScreenPanel().setButtonListener(true, 3, new LogoutAction());
+		MainController.mainframe.getScreenPanel().setButtonListener(false, 2, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainController.getMainControllerInstance().setState(states.MAIN_MENU);
+			}
+			
+		});
 		MainController.mainframe.getScreenPanel().setButtonListener(false, 3, new GetCashAction());
 	}
 

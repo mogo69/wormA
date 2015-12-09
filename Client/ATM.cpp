@@ -172,7 +172,15 @@ void ATM::processRequest(const boost::shared_ptr<Request>& req, Response& resp)
 {
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::socket socket(io_service);
-    socket.connect( boost::asio::ip::tcp::endpoint( boost::asio::ip::address::from_string(_bankHost), _bankPort));
+    try
+    {
+        socket.connect( boost::asio::ip::tcp::endpoint( boost::asio::ip::address::from_string(_bankHost), _bankPort));
+    }
+    catch(...)
+    {
+        resp = Response(false, "An error has occured while trying to connect to Bank");
+        return;
+    }
     sendRequest(req, socket);
     receiveResponse(resp, socket);
     socket.close();
