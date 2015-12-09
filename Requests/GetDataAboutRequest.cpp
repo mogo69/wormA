@@ -7,7 +7,7 @@ using namespace std;
 
 #include "GetDataAboutRequest.h"
 
-GetDataAboutRequest::GetDataAboutRequest(const string& sessionKey, const string cardNumber):
+GetDataAboutRequest::GetDataAboutRequest(const string& sessionKey, const string& cardNumber):
     Request(),
     _sessionKey(sessionKey),
     _cardNumber(cardNumber)

@@ -50,22 +50,18 @@ const Response LoginRequest::doProcess(MYSQL* connect) const
     MYSQL_ROW row = mysql_fetch_row(mysql_store_result(connect));
     if(row == 0)
     {
- //       cout<<"Incorrect card number or PIN"<<endl;
         return Response(false, "Incorrect card number or PIN");
     }
     else
     {
         if(row[0] == 0)
         {
- //           cout<<"Session key not set"<<endl;
             string sessionKey = generateRandom(32);
- //           cout<<"Session key generated: "<<sessionKey<<endl;
             mysql_query(connect, ("UPDATE account SET session_key = '" + sessionKey + "' WHERE card_number = " + _cardNumber).c_str());
             return Response(true, sessionKey);
         }
         else
         {
- //           cout<<"Session key is "<<row[0]<<endl;
           return Response(false, "Allready logged in");
         }
     }

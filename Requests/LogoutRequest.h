@@ -19,7 +19,7 @@ private:
 
     friend class boost::serialization::access;
     template <typename Archive>
-    void serialize(Archive &ar, const unsigned int version);
+    void serialize(Archive &ar, const unsigned version);
 
     virtual const Response doProcess(MYSQL*) const;
     virtual string doGetSessionKey() const;
@@ -31,7 +31,7 @@ private:
 BOOST_SERIALIZATION_SHARED_PTR(LogoutRequest)
 
 template <typename Archive>
-void LogoutRequest::serialize(Archive &ar, const unsigned int version)
+void LogoutRequest::serialize(Archive &ar, const unsigned version)
 {
     ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Request);
     ar & boost::serialization::make_nvp("sessionKey", _sessionKey);

@@ -12,7 +12,7 @@ using namespace std;
 class LoginRequest: public Request
 {
 public:
-    LoginRequest(const string& cardNumber ="",  unsigned PIN = 0);
+    LoginRequest(const string& cardNumber ="",  const unsigned PIN = 0);
     virtual ~LoginRequest();
 private:
     string _cardNumber;
@@ -20,19 +20,19 @@ private:
 
     friend class boost::serialization::access;
     template <typename Archive>
-    void serialize(Archive &ar, const unsigned int version);
+    void serialize(Archive& ar, const unsigned version);
 
     virtual const Response doProcess(MYSQL*) const;
     virtual string doGetSessionKey() const;
 
-//    LoginRequest(const Request&);
+    LoginRequest(const Request&);
     LoginRequest& operator=(const Request&);
 };
 
 BOOST_SERIALIZATION_SHARED_PTR(LoginRequest)
 
 template <typename Archive>
-void LoginRequest::serialize(Archive &ar, const unsigned int version)
+void LoginRequest::serialize(Archive &ar, const unsigned version)
 {
     ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Request);
     ar & boost::serialization::make_nvp("cardNumber", _cardNumber);

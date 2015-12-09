@@ -20,7 +20,7 @@ public:
 private:
     friend class boost::serialization::access;
     template <typename Archive>
-    void serialize(Archive &, const unsigned);
+    void serialize(Archive&, const unsigned version);
 
     virtual const Response doProcess(MYSQL *) const = 0;
     virtual string doGetSessionKey() const = 0;
