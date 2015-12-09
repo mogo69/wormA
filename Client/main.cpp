@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    ATM& atm = ATM::getInstance("127.0.0.1", 9999);
+    ATM& atm = ATM::getInstance("192.168.0.108", 9999);
     cout<<atm.getAdvert()<<endl;
     if(atm.logIn("6771909456273272", 7709))
     {
@@ -18,7 +18,7 @@ int main()
     }
     else
     {
-        cout<<"Not looged in"<<endl;
+        cout<<"Not logged in"<<endl;
     }
     atm.logOut();
     return 0;

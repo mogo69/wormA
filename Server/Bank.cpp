@@ -47,7 +47,7 @@ Bank::Bank(const string& dbHost,
     cout<<"Bank was successfully created"<<endl;
 #endif
     MYSQL* connect;
-    connect = mysql_init(NULL);
+    connect = mysql_init(0);
     if (!connect)
     {
         cout<<"MySQL Initialization failed";
@@ -63,7 +63,7 @@ Bank::Bank(const string& dbHost,
     }
 
     boost::asio::io_service io_service;
-    boost::asio::ip::tcp::acceptor acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"),_port));
+    boost::asio::ip::tcp::acceptor acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(_host),_port));
 
     cout<<"TCP Server successfuly started at host "<<host<<" on port "<<port<<endl;
 
@@ -91,7 +91,7 @@ Bank::Bank(const string& dbHost,
         {
             try
             {
-                //dynamic_cast<boost::shared_ptr<LoginRequest>>(req));
+                dynamic_cast<LoginRequest&>(*req);
                 try
                 {
                      resp = req->process(connect);
