@@ -78,7 +78,6 @@ const bool ATM::canWithdraw(const unsigned sum)
 
 const bool ATM::withdraw(const unsigned sum, const bool useCreditMoney)
 {
-    cout << (_innerCash->canWithdraw(sum)) <<endl;
     if(_innerCash->canWithdraw(sum) == false ) return false;
     Response resp;
     processRequest(boost::make_shared<WithdrawRequest>(_sessionKey, sum, useCreditMoney), resp);
@@ -209,7 +208,7 @@ ATM::InnerCash::~InnerCash()
 bool ATM::InnerCash::canWithdraw(const size_t sum)
 {
     vector<array<size_t,5>> sols = findSolutions(sum);
-    /*#ifndef NDEBUG
+    #ifndef NDEBUG
     cout <<"InnerCash canWithdraw " <<sum<<":" << endl;
     for (size_t i = 0; i < sols.size(); i++)
     {
@@ -220,12 +219,13 @@ bool ATM::InnerCash::canWithdraw(const size_t sum)
         }
         cout << endl;
     }
-    #endif*/
+    #endif
     return !sols.empty();
 
 }
 bool ATM::InnerCash::withdraw(const size_t sum)
 {
+    if(!canWithdraw(sum)) return false;
     array<size_t,5> combination = chooseBestCombination(findSolutions(sum));
     for(size_t i = 0; i < _numOfPockets; i++)
     {
@@ -252,7 +252,7 @@ vector<array<size_t,5>> ATM::InnerCash::findSolutions(const size_t sum, size_t p
 				{
 					array<size_t,5> newCombination = combination;
 					newCombination[i]++;
-					if (solutions.size()>=10) break;
+					if (solutions.size() >= 5) break;
 					vector<array<size_t,5>> newSolutions = findSolutions(sum, i, newCombination);
 					if (!newSolutions.empty())
 					{

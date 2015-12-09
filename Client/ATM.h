@@ -47,7 +47,7 @@ class ATM::InnerCash
 {
 public:
     struct Pocket;
-    InnerCash(const array<size_t,5> values   = { 10, 20, 50, 100, 200 },
+    InnerCash(const array<size_t,5> values   = { 200, 100, 50, 20, 10 },
               const array<size_t,5> ammounts = { 100, 100, 100, 100, 100 });
     ~InnerCash();
     bool canWithdraw(const size_t);
