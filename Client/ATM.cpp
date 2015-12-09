@@ -27,6 +27,8 @@ std::stringstream ss;
 using namespace boost::archive;
 
 #include "../Requests/Request.h"
+#include "../Requests/IsBlockedRequest.h"
+#include "../Requests/BlockRequest.h"
 #include "../Requests/LoginRequest.h"
 #include "../Requests/LogoutRequest.h"
 #include "../Requests/GetBalanceRequest.h"
@@ -38,6 +40,8 @@ using namespace boost::archive;
 #include "../Responses/Response.h"
 
 BOOST_CLASS_EXPORT_GUID(Request, "request")
+BOOST_CLASS_EXPORT_GUID(IsBlockedRequest, "is_blocked_request")
+BOOST_CLASS_EXPORT_GUID(BlockRequest, "block_request")
 BOOST_CLASS_EXPORT_GUID(LoginRequest, "login_request")
 BOOST_CLASS_EXPORT_GUID(LogoutRequest, "logout_request")
 BOOST_CLASS_EXPORT_GUID(GetBalanceRequest, "get_balance_request")
@@ -45,6 +49,7 @@ BOOST_CLASS_EXPORT_GUID(WithdrawRequest, "withdraw_request")
 BOOST_CLASS_EXPORT_GUID(GetAdvertRequest, "get_advert_request")
 BOOST_CLASS_EXPORT_GUID(GetDataAboutRequest, "get_data_about_request")
 BOOST_CLASS_EXPORT_GUID(SendMoneyToRequest, "send_money_to_request")
+
 
 ATM::ATM(const string& bankHost, const unsigned bankPort):
     _bankHost(bankHost),
@@ -69,6 +74,20 @@ ATM& ATM::getInstance(const string& bankHost, const unsigned bankPort)
 {
     static ATM instance(bankHost, bankPort);
     return instance;
+}
+
+const bool ATM::isBlocked(const string& cardNumber)
+{
+    Response resp;
+    processRequest(boost::make_shared<IsBlockedRequest>(cardNumber), resp);
+    return resp.wasSuccessful() ? (resp.getMessage() == "Card is blocked") : false;
+}
+
+const bool ATM::block(const string& cardNumber)
+{
+    Response resp;
+    processRequest(boost::make_shared<BlockRequest>(cardNumber), resp);
+    return resp.wasSuccessful();
 }
 
 const bool ATM::canWithdraw(const unsigned sum)

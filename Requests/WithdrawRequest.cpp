@@ -36,7 +36,6 @@ const Response WithdrawRequest::doProcess(MYSQL* connect) const
     }
     double balance = atof(row[0]);
     double credit_balance = atof(row[1]);
-
     if(balance < _sum && !_useCreditMoney) return Response(false, "You haven't such amount of money.");
     if(_useCreditMoney && abs(balance-_sum) > credit_balance) return Response(false, "Your credit balance is too small.");
     balance -= _sum;

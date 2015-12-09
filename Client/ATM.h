@@ -18,7 +18,7 @@ public:
     class InnerCash;
     ~ATM();
     const bool isBlocked(const string& cardNumber);
-    const bool setBlocked(const string& cardNumber);
+    const bool block(const string& cardNumber);
     const bool logIn(const string& cardNumber, const unsigned PIN);
     const bool logOut();
     const bool changePIN(const unsigned PIN);

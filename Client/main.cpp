@@ -5,8 +5,12 @@ using namespace std;
 
 int main()
 {
-    ATM& atm = ATM::getInstance("192.168.0.108", 9999);
+    ATM& atm = ATM::getInstance("127.0.0.1", 9999);
 //    cout<<atm.getAdvert();
+//    cout<<atm.isBlocked("0604384783441263")<<endl;
+    cout<<atm.isBlocked("0604229556198639")<<endl;
+    cout<<atm.block("0604229556198639")<<endl;
+    cout<<atm.isBlocked("0604229556198639")<<endl;
     if(atm.logIn("0604229556198639", 3489))
     {
         cout<<"Logged in successfull"<<endl;

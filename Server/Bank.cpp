@@ -11,6 +11,8 @@ using namespace std;
 #include <boost/archive/text_iarchive.hpp>
 
 #include "../Requests/Request.h"
+#include "../Requests/IsBlockedRequest.h"
+#include "../Requests/BlockRequest.h"
 #include "../Requests/LoginRequest.h"
 #include "../Requests/LogoutRequest.h"
 #include "../Requests/GetBalanceRequest.h"
@@ -22,6 +24,8 @@ using namespace std;
 #include "../Responses/Response.h"
 
 BOOST_CLASS_EXPORT_GUID(Request, "request")
+BOOST_CLASS_EXPORT_GUID(IsBlockedRequest, "is_blocked_request")
+BOOST_CLASS_EXPORT_GUID(BlockRequest, "block_request")
 BOOST_CLASS_EXPORT_GUID(LoginRequest, "login_request")
 BOOST_CLASS_EXPORT_GUID(LogoutRequest, "logout_request")
 BOOST_CLASS_EXPORT_GUID(GetBalanceRequest, "get_balance_request")
@@ -126,13 +130,34 @@ void processRequests(MYSQL* connect, boost::asio::io_service& io_service, boost:
     boost::shared_ptr<Request> req;
     iar & boost::serialization::make_nvp("item", req);
 
-    Response resp;
+    Response resp(true);
 
     if(req->getSessionKey() == "")
     {
         try
         {
-            dynamic_cast<LoginRequest&>(*req);
+            dynamic_cast<IsBlockedRequest&>(*req);
+        }
+        catch(...)
+        {
+            try
+            {
+                dynamic_cast<BlockRequest&>(*req);
+            }
+            catch(...)
+            {
+                try
+                {
+                    dynamic_cast<LoginRequest&>(*req);
+                }
+                catch(...)
+                {
+                    resp = Response(false, "You do not use session key");
+                }
+            }
+        }
+        if (resp.wasSuccessful())
+        {
             try
             {
                 resp = req->process(connect);
@@ -141,11 +166,6 @@ void processRequests(MYSQL* connect, boost::asio::io_service& io_service, boost:
             {
                 resp = Response(false, "Database problem");
             }
-
-        }
-        catch(...)
-        {
-            resp = Response(false, "You do not use session key");
         }
 
     }
