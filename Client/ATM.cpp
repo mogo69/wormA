@@ -207,6 +207,7 @@ ATM::InnerCash::~InnerCash()
 
 bool ATM::InnerCash::canWithdraw(const size_t sum)
 {
+    if(sum > 5000) return false;
     vector<array<size_t,5>> sols = findSolutions(sum);
     #ifndef NDEBUG
     cout <<"InnerCash canWithdraw " <<sum<<":" << endl;
