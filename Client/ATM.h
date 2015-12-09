@@ -17,17 +17,17 @@ class ATM
 public:
     class InnerCash;
     ~ATM();
-    bool logIn(const string cardN, const unsigned PIN);
-    bool logOut();
-    bool changePIN(const size_t PIN);
-    string getAdvert();
-    double getBalance();
-    bool canWithdraw(size_t sum);
-    bool withdraw(const size_t sum, const bool useCreditMoney = false);
-    string getDataAbout(const string cardN);
-    bool sendMoneyTo(double sum, const string cardN);
+    const bool logIn(const string& cardNumber, const unsigned PIN);
+    const bool logOut();
+    const bool changePIN(const unsigned PIN);
+    const string getAdvert();
+    const double getBalance();
+    const bool canWithdraw(const unsigned sum);
+    const bool withdraw(const unsigned sum, const bool useCreditMoney = false);
+    const string getDataAbout(const string& cardNumber);
+    const bool sendMoneyTo(const unsigned sum, const string& cardNumber);
 
-    static ATM& getInstance(const string&, const unsigned);
+    static ATM& getInstance(const string& bankHost, const unsigned bankPort);
 private:
     string _bankHost;
     unsigned _bankPort;
@@ -36,7 +36,7 @@ private:
 
     void processRequest(const boost::shared_ptr<Request>&, Response&);
 
-    ATM(const string&, const unsigned);
+    ATM(const string& bankHost, const unsigned bankPort);
     ATM(const ATM&);
     ATM& operator=(const ATM&);
 };

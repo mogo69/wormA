@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-SendMoneyToRequest::SendMoneyToRequest(const string& sessionKey, const double sum, const string cardNumber):
+SendMoneyToRequest::SendMoneyToRequest(const string& sessionKey, const unsigned sum, const string& cardNumber):
     Request(),
     _sessionKey(sessionKey),
     _sum(sum),
@@ -40,8 +40,6 @@ const Response SendMoneyToRequest::doProcess(MYSQL* connect) const
     mysql_query(connect, ("SELECT balance FROM account WHERE card_number = '" + _cardNumber + "'").c_str());
     MYSQL_ROW row2 = mysql_fetch_row(mysql_store_result(connect));
     if(row == 0) return Response(false, "No such card number");
-
-
 
     double balance2 = atof(row2[0]);
     balance2 += _sum;

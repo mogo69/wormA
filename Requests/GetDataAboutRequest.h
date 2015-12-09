@@ -12,7 +12,7 @@ using namespace std;
 class GetDataAboutRequest: public Request
 {
 public:
-    GetDataAboutRequest(const string& sessionKey ="", const string cardNumber="");
+    GetDataAboutRequest(const string& sessionKey ="", const string& cardNumber="");
     virtual ~GetDataAboutRequest();
 private:
     string _sessionKey;

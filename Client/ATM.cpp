@@ -71,16 +71,12 @@ ATM& ATM::getInstance(const string& bankHost, const unsigned bankPort)
     return instance;
 }
 
-bool ATM::canWithdraw(size_t sum)
+const bool ATM::canWithdraw(const unsigned sum)
 {
     return (sum <= getBalance() && _innerCash->canWithdraw(sum));
 }
-void connect(boost::asio::ip::tcp::socket& socket)
-{
 
-}
-
-bool ATM::withdraw(const size_t sum, const bool useCreditMoney)
+const bool ATM::withdraw(const unsigned sum, const bool useCreditMoney)
 {
     Response resp;
     processRequest(boost::make_shared<WithdrawRequest>(_sessionKey, sum, useCreditMoney), resp);
@@ -91,11 +87,10 @@ bool ATM::withdraw(const size_t sum, const bool useCreditMoney)
     return resp.wasSuccessful();
 }
 
-bool ATM::logIn(const string cardN, const unsigned PIN)
+const bool ATM::logIn(const string& cardN, const unsigned PIN)
 {
     Response resp;
     processRequest(boost::make_shared<LoginRequest>(cardN, PIN), resp);
-//    cout<<resp.getMessage()<<endl;
     if(resp.wasSuccessful())
     {
         _sessionKey = resp.getMessage();
@@ -103,14 +98,14 @@ bool ATM::logIn(const string cardN, const unsigned PIN)
     return resp.wasSuccessful();
 }
 
-double ATM::getBalance()
+const double ATM::getBalance()
 {
     Response resp;
     processRequest(boost::make_shared<GetBalanceRequest>(_sessionKey), resp);
     return resp.wasSuccessful() ? atof(resp.getMessage().c_str()) : -1;
 }
 
-bool ATM::logOut()
+const bool ATM::logOut()
 {
     Response resp;
     processRequest(boost::make_shared<LogoutRequest>(_sessionKey), resp);
@@ -121,20 +116,21 @@ bool ATM::logOut()
     return resp.wasSuccessful();
 }
 
-string ATM::getAdvert()
+const string ATM::getAdvert()
 {
     Response resp;
-    processRequest(boost::make_shared<GetAdvertRequest>(), resp);
-    return resp.getMessage();
+    processRequest(boost::make_shared<GetAdvertRequest>(_sessionKey), resp);
+    return resp.wasSuccessful() ? resp.getMessage() : "";
 }
-string ATM::getDataAbout(const string cardN)
+
+const string ATM::getDataAbout(const string& cardN)
 {
     Response resp;
     processRequest(boost::make_shared<GetDataAboutRequest>(_sessionKey, cardN), resp);
     return resp.getMessage();
 }
 
-bool ATM::sendMoneyTo(const double sum, const string cardN)
+const bool ATM::sendMoneyTo(const unsigned sum, const string& cardN)
 {
     Response resp;
     processRequest(boost::make_shared<SendMoneyToRequest>(_sessionKey,sum, cardN), resp);

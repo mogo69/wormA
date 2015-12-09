@@ -12,11 +12,11 @@ using namespace std;
 class SendMoneyToRequest: public Request
 {
 public:
-    SendMoneyToRequest(const string& sessionKey ="", const double sum = 0, const string cardNumber ="");
+    SendMoneyToRequest(const string& sessionKey ="", const unsigned sum = 0, const string& cardNumber ="");
     virtual ~SendMoneyToRequest();
 private:
     string _sessionKey;
-    double _sum;
+    unsigned _sum;
     string _cardNumber;
 
     friend class boost::serialization::access;
