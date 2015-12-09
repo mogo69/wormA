@@ -125,6 +125,8 @@ public class MainController {
 	
 	private void setGettingCashState() {
 		MainController.mainframe.getScreenPanel().getScreen().setLabelAndTextFieldOnArea("Enter sum you want to get: ");
+		MainController.mainframe.getScreenPanel().getScreen().setLeftCaptions(GUIConstants.getGetCashLeftCaptions());
+		MainController.mainframe.getScreenPanel().getScreen().setRightCaptions(GUIConstants.getGetCashRightCaptions());
 //		It already set.
 //		MainController.mainframe.getScreenPanel().setButtonListener(true, 3, new LogoutAction());
 		MainController.mainframe.getScreenPanel().setButtonListener(false, 2, new ActionListener() {
